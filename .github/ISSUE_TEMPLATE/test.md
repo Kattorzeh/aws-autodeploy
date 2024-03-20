@@ -1,10 +1,10 @@
 ---
 name: EC2 Instance
 description: This issue will create and configure an EC2 instance.
-title: "EC2 Template"
-labels: ["state-pending", "action-validate"]
+title: EC2 Template - <Title>
+labels: "state-pending, action-validate"
 assignees: ''
-----
+---
 
 ---
 <!--
