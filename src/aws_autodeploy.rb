@@ -3,9 +3,10 @@ $LOAD_PATH << '../src'
 
 require 'logger'
 require 'tools/log'
-
+require_relative 'actions/action'
 
 # Global Objects
+
 # Logger
 LOG_COMP = 'MAIN'
 
@@ -15,8 +16,6 @@ Log.info(LOG_COMP, 'Starting AWS-Autodeploy')
 
 # Action tag
 action_tag = ARGV[0].to_s
-
-
 
 # Code:
 
