@@ -15,7 +15,7 @@ jobs:
           submodules: true
 
       # Setup terraform (only needed for action-deploy and action-delete)
-      - name: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
         if: github.event.label.name == 'action-deploy' || github.event.label.name == 'action-delete' || github.event.label.name == 'action-recover'
       
       # run aws_autodeploy.rb

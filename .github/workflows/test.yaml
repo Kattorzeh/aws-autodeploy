@@ -10,9 +10,9 @@ jobs:
     steps:
       - name: add-comment
         run: echo "adding a comment"
-  aws-autodeploy-deploying:
-    if: github.event.label.name == 'action-deploy'
-  aws-autodeploy-undeploying:
-    if: github.event.label.name == 'action-delete'
-  aws-autodeploy-purged:
-    if: github.event.label.name == 'action-purge'
+  #aws-autodeploy-deploying:
+    #if: github.event.label.name == 'action-deploy'
+  #aws-autodeploy-undeploying:
+    #if: github.event.label.name == 'action-delete'
+  #aws-autodeploy-purged:
+    #if: github.event.label.name == 'action-purge'
