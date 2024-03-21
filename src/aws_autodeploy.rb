@@ -24,8 +24,8 @@ action = Action.for(action_tag)
 
 # Execute action
 Log.debug(LOG_COMP, "Executing action '#{action_tag}'")
-action.execute(self)
+action.execute()
 
 # Report results
 Log.debug(LOG_COMP, "Reporting action '#{action_tag}'")
-action.report(self)
+action.report()
