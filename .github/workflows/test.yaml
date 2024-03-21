@@ -8,8 +8,20 @@ jobs:
     if: github.event.label.name == 'action-validate'
     runs-on: ubuntu-latest
     steps:
-      - name: add-comment
-        run: echo "adding a comment"
+      - name: Add a comment
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const issueComment = `
+              Hello there! This is an automated comment added by a GitHub Action.
+              Your template is being validated.
+            `;
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: issueComment
+            });
   #aws-autodeploy-deploying:
     #if: github.event.label.name == 'action-deploy'
   #aws-autodeploy-undeploying:

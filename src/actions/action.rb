@@ -1,3 +1,5 @@
+require 'tools/log'
+
 class Action
 
     LOG_COMP = 'ACT'
@@ -43,3 +45,4 @@ class Action
     def report
         raise 'Method "report" not implemented'
     end
+end

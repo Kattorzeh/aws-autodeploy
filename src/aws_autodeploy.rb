@@ -1,3 +1,7 @@
+require 'logger'
+require 'tools/log'
+
+
 # Global Objects
 # Logger
 LOG_COMP = 'MAIN'
