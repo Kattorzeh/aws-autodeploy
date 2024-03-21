@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 class Log
     # Open its singleton class
     class << self

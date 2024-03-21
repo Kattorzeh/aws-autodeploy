@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+$LOAD_PATH << '../src'
+
 require 'logger'
 require 'tools/log'
 
