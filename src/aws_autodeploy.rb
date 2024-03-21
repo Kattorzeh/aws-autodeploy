@@ -11,7 +11,6 @@ LOG_COMP = 'MAIN'
 
 logger = Logger.new(STDOUT)
 Log.logger = logger
-Log.level  = 3
 Log.info(LOG_COMP, 'Starting AWS-Autodeploy')
 
 # Action tag
