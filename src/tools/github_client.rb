@@ -1,0 +1,29 @@
+require 'uri'
+require 'json'
+require 'net/http'
+
+class Github
+
+    LOG_COMP = 'GH'
+    
+    # Obtain Issue details
+    def get_issue(issue_number)
+        Log.info(LOG_COMP, 'Configuring github client')
+        uri = URI("#{GH_URL}/issues/#{issue_number}")
+        req = Net::HTTP::Get.new(uri)
+        req['Accept'] = 'application/vnd.github.v3+json'
+        req.basic_auth(@user, @token)
+
+        res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+        http.request(req)
+        end
+
+        unless res.is_a?(Net::HTTPSuccess)
+            Log.error(LOG_COMP, "Error fetching the issue from github: #{res.message}")
+            raise "Error fetching issue details: #{res.message}"
+        end
+
+        JSON.parse(res.body)
+    end
+
+end
