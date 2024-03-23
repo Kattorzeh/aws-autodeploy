@@ -5,7 +5,6 @@ require 'logger'
 require 'tools/log'
 require_relative 'actions/action'
 require 'json'
-require 'octokit'
 
 # Global Objects:
 
