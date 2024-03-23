@@ -19,7 +19,7 @@ An example template with the minimum fields is shown below.
 
 -->
 
-:name: 
+:ec2_name: 
 :email: 
 :instance_type: 
 
