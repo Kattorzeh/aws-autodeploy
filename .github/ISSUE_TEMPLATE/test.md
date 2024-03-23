@@ -13,7 +13,7 @@ This template is used to configure and deploy an EC2 instance.
 
 An example template with the minimum fields is shown below.
 
-:name: "ec2_mario"
+:ec2_name: "ec2_mario"
 :email: "example@gmail.com"
 :instance_type: "t2.micro"
 

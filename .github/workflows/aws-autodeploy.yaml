@@ -26,4 +26,4 @@ jobs:
         if: github.event.label.name == 'action-validate' || github.event.label.name == 'action-deploy' || github.event.label.name == 'action-update' || github.event.label.name == 'action-delete' || github.event.label.name == 'action-purge' || github.event.label.name == 'action-recover'
         shell: bash
         run: |
-          ruby aws_autodeploy.rb ${{ github.event.label.name}} ${{ toJson(github.event.issue) }}
+          ruby aws_autodeploy.rb "${{ github.event.label.name}}" "${{ toJson(github.event.issue) }}"
