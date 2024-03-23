@@ -36,7 +36,3 @@ action.execute(issue)
 # Report results
 Log.debug(LOG_COMP, "Reporting action '#{action_tag}'")
 action.report()
-
-# Add description field in the Issue
-client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
-client.add_comment(ENV['GITHUB_REPOSITORY'], ENV['GITHUB_EVENT_NUMBER'], "Esto es un ejemplo de comentario desde el script aws_autodeploy.rb")
