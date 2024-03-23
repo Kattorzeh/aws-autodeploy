@@ -5,14 +5,14 @@ require 'json'
 require 'net/http'
 require 'tools/log'
 
-class Github
+class Github_client
 
     LOG_COMP = 'GH'
 
     GH_URL = 'https://api.github.com/repos/Kattorzeh/aws-autodeploy/'
 
     # Obtain Issue details
-    def get_issue(issue_number)
+    def self.get_issue(issue_number)
         Log.info(LOG_COMP, 'Configuring github client')
         uri = URI("#{GH_URL}/issues/#{issue_number}")
         req = Net::HTTP::Get.new(uri)
