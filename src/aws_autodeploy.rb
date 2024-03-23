@@ -3,8 +3,9 @@ $LOAD_PATH << '../src'
 
 require 'logger'
 require 'tools/log'
-require_relative 'actions/action'
 require 'json'
+require_relative 'actions/action'
+require_relative 'tools/github_client'
 
 # Global Objects:
 
@@ -19,9 +20,11 @@ Log.info(LOG_COMP, 'Starting AWS-Autodeploy')
 action_tag = ARGV[0].to_s
 Log.debug(LOG_COMP, "Action tag: #{action_tag}")
 
-# Issue from JSON
-issue_json = ARGV[0]
-issue = JSON.parse(issue_json)
+# Issue from GItHUb Client
+issue_number = ARGV[1]
+issue = Github.get_issue(issue_number)
+
+Log.info(LOG_COMP, "issue: #{issue}")
 
 # Code:
 
