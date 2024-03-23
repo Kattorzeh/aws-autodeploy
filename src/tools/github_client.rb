@@ -9,7 +9,7 @@ class Github_client
 
     LOG_COMP = 'GH'
 
-    GH_URL = 'https://api.github.com/repos/Kattorzeh/aws-autodeploy/'
+    GH_URL = 'https://api.github.com/repos/Kattorzeh/aws-autodeploy'
 
     # Obtain Issue details
     def self.get_issue(issue_number)
