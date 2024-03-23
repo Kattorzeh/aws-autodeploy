@@ -17,10 +17,11 @@ class Github
         uri = URI("#{GH_URL}/issues/#{issue_number}")
         req = Net::HTTP::Get.new(uri)
         req['Accept'] = 'application/vnd.github.v3+json'
+        req['Authorization'] = "token #{ENV['GH_TOKEN']}"
 
 
         res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
-        http.request(req)
+            http.request(req)
         end
 
         unless res.is_a?(Net::HTTPSuccess)

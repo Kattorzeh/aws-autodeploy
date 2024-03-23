@@ -22,7 +22,7 @@ Log.debug(LOG_COMP, "Action tag: #{action_tag}")
 
 # Issue from GItHUb Client
 issue_number = ARGV[1]
-issue = Github.get_issue(issue_number)
+issue = Github_client.get_issue(issue_number)
 
 Log.info(LOG_COMP, "issue: #{issue}")
 
