@@ -15,13 +15,9 @@ class Github_client
     def self.get_issue(issue_number)
         Log.info(LOG_COMP, 'Configuring github client')
         uri = URI("#{GH_URL}/issues/#{issue_number}")
-        puts uri.to_s
         req = Net::HTTP::Get.new(uri)
         req['Accept'] = 'application/vnd.github.v3+json'
         req['Authorization'] = "token #{ENV['GH_TOKEN']}"
-
-        Log.info(LOG_COMP, "Token: #{ENV['GH_TOKEN']}")
-
         res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
             http.request(req)
         end

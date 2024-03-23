@@ -21,7 +21,6 @@ class ValidateAction < Action
 
         Log.info(LOG_COMP, "Comments: #{comments}")
         Log.info(LOG_COMP, "Labels: #{labels}")
-        Log.info(LOG_COMP, "Assigned to: #{assignees}")
         Log.info(LOG_COMP, "State: #{state}")
         Log.info(LOG_COMP, "Creation Date: #{created_at}")
         Log.info(LOG_COMP, "Last Updated Date: #{updated_at}")
