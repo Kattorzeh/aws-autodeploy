@@ -5,6 +5,7 @@ class ValidateAction < Action
 
     def execute(issue)
         Log.info(LOG_COMP, "Validating template")
+        
         issue_number = issue['number']
         issue_title = issue['title']
         issue_body = issue['body']

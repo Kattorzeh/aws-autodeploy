@@ -20,11 +20,10 @@ Log.info(LOG_COMP, 'Starting AWS-Autodeploy')
 action_tag = ARGV[0].to_s
 Log.debug(LOG_COMP, "Action tag: #{action_tag}")
 
-# Issue from GItHUb Client
+# Issue from GItHub Client
 issue_number = ARGV[1]
 issue = Github_client.get_issue(issue_number)
-
-Log.info(LOG_COMP, "issue: #{issue}")
+Log.debug(LOG_COMP, "Issue num: #{issue_number}")
 
 # Code:
 
