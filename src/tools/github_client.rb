@@ -19,7 +19,7 @@ class Github_client
         req['Accept'] = 'application/vnd.github.v3+json'
         req['Authorization'] = "token #{ENV['GH_TOKEN']}"
 
-        Log.info(LOG_COMP, 'Token: #{ENV['GH_TOKEN']}')
+        Log.info(LOG_COMP, "Token: #{ENV['GH_TOKEN']}")
 
         res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
             http.request(req)
