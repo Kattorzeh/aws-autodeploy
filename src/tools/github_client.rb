@@ -15,6 +15,7 @@ class Github_client
     def self.get_issue(issue_number)
         Log.info(LOG_COMP, 'Configuring github client')
         uri = URI("#{GH_URL}/issues/#{issue_number}")
+        puts uri.to_s
         req = Net::HTTP::Get.new(uri)
         req['Accept'] = 'application/vnd.github.v3+json'
         req['Authorization'] = "token #{ENV['GH_TOKEN']}"
@@ -26,7 +27,7 @@ class Github_client
         end
 
         unless res.is_a?(Net::HTTPSuccess)
-            Log.error(LOG_COMP, "Error fetching the issue from github: #{res.message}")
+            Log.error(LOG_COMP, "Error fetching the issue from github: #{res}")
             raise "Error fetching issue details: #{res.message}"
         end
 
