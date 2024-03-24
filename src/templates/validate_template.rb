@@ -27,13 +27,13 @@ class ValidateTemplate
         # AWS-EC2-AMI
         response_ami = aws_ec2_client.describe_images(image_ids: ['ami-0183b16fc359a89dd'])
         puts response_ami
-        ami = response.images[0]
+        ami = response_ami.images[0]
         puts "AMI ID: #{ami.image_id}"
         puts "AMI Name: #{ami.name}"
         puts "AMI Desc: #{ami.description}"
     end
 
-    
+
     # Default Values
     DEFAULT_PROVIDER    = 'aws'
     AWS_REGION          = 'eu-central-1'
