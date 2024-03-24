@@ -19,6 +19,11 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         if: github.event.label.name == 'action-deploy' || github.event.label.name == 'action-delete' || github.event.label.name == 'action-recover'
       
+      # Setup gems
+       - name: Install Ruby dependencies
+        run: |
+          gem install aws-sdk
+
       # run aws_autodeploy.rb
       - name: Run main action
         id: run-aws-autodeploy-action
