@@ -20,7 +20,7 @@ jobs:
         if: github.event.label.name == 'action-deploy' || github.event.label.name == 'action-delete' || github.event.label.name == 'action-recover'
       
       # Setup gems
-       - name: Install Ruby dependencies
+      - name: Install Ruby dependencies
         run: |
           gem install aws-sdk
 
