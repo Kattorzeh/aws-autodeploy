@@ -6,7 +6,8 @@ require 'tools/log'
 require 'json'
 require_relative 'actions/action'
 require_relative 'tools/github_client'
-require_relative 'tools/issue_params.rb'
+require_relative 'tools/issue_params'
+require_relative 'templates/validate_template'
 # Global Objects:
 
 # Logger
@@ -28,6 +29,7 @@ Log.debug(LOG_COMP, "Issue num: #{issue_number}")
 # Get Params from Issue
 parameterizer = IssueParams.new(issue['body'])
 issue_params = parameterizer.get_params()
+
 # Code:
 
 # Generate action from issue tag
