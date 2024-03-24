@@ -5,11 +5,10 @@ class ValidateTemplate
     LOG_COMP = 'VAL_TEMP'
 
     # AWS Clients
-    AWS.config(
-        access_key_id: "#{ENV['ACCESS_KEY_ID']}",
-        secret_access_key: "#{ENV['SECRET_ACCESS_KEY']}",
-        region: "#{ENV['REGION']}",
-    )
+    Aws.config.update({
+        credentials: Aws::Credentials.new(ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY']),
+        region: ENV['REGION']
+    })
     aws_ec2_client = Aws::EC2::Client.new
 
     # AWS Data
