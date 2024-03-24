@@ -24,15 +24,24 @@ class ValidateTemplate
             puts "'m1.nano' IS NOT present."
         end
 
+        response_bad_type = aws_ec2_client.describe_instance_type_offerings(
+            filters: [{ name: 'instance-type', values: ['mario'] }]
+        )
+        puts response_bad_type
+
         # AWS-EC2-AMI
         response_ami = aws_ec2_client.describe_images(image_ids: ['ami-0183b16fc359a89dd'])
-        puts response_ami
         ami = response_ami.images[0]
         puts "AMI ID: #{ami.image_id}"
         puts "AMI Name: #{ami.name}"
         puts "AMI Desc: #{ami.description}"
-        response_bad_ami = aws_ec2_client.describe_images(image_ids: ['ami-0'])
-        puts response_bad_ami
+
+        begin
+            response_bad_ami = aws_ec2_client.describe_images(image_ids: ['ami-0'])
+            puts response_bad_ami
+        rescue Aws::EC2::Errors::InvalidAMIIDNotFound => e
+            puts "Error: #{e.message}"
+        end
     end
 
 
