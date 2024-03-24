@@ -15,8 +15,9 @@ class ValidateTemplate
 
         # AWS Data
         response = aws_ec2_client.describe_instance_types
+        puts response
         aws_ec2_types = response.instance_types.map(&:instance_type)
-    
+        puts aws_ec2_types
         aws_ec2_types.each do |instance_type|
           puts instance_type
         end
