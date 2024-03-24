@@ -26,7 +26,8 @@ issue = Github_client.get_issue(issue_number)
 Log.debug(LOG_COMP, "Issue num: #{issue_number}")
 
 # Get Params from Issue
-issue_params = IssueParams.new(issue['body'])
+parameterizer = IssueParams.new(issue['body'])
+issue_params = parameterizer.get_params()
 # Code:
 
 # Generate action from issue tag

@@ -4,7 +4,7 @@ class IssueParams
       @body = body
     end
   
-    def get_params
+    def get_params()
       params = {}
   
       matches = @body.scan(/:(\w+):\s*["']?(.*?)["']?\s*(?:\n|\z)/)
