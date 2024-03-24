@@ -19,6 +19,13 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         if: github.event.label.name == 'action-deploy' || github.event.label.name == 'action-delete' || github.event.label.name == 'action-recover'
       
+      # Setup Ruby
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+          bundler-cache: true
+          
       # Setup gems
       - name: Install Ruby dependencies
         run: |
