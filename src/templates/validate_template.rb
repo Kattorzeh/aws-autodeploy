@@ -44,12 +44,12 @@ class ValidateTemplate
                 :type => :string,
                 :required => false,
                 :default => AWS_EC2_TYPE,
-                :enum => aws_ec2_types
+                #:enum => aws_ec2_types
             },
             'ec2_ami_os' => {
                 type: :string,
                 required: false,
-                #enum: %w[linux windows]
+                enum: %w[linux windows]
             },
             'ec2_ami' => {
                 type: :string,
