@@ -3,9 +3,11 @@ require 'actions/action'
 class ValidateAction < Action
     attr_reader :success
 
-    def execute(issue)
+    def execute(issue,issue_params)
         Log.info(LOG_COMP, "Validating template")
-        
+        Log.ingo (LOG_COMP, "Issue Params: #{issue_params}")
+
+        '''
         issue_number = issue['number']
         issue_title = issue['title']
         issue_body = issue['body']
@@ -25,6 +27,10 @@ class ValidateAction < Action
         Log.info(LOG_COMP, "State: #{state}")
         Log.info(LOG_COMP, "Creation Date: #{created_at}")
         Log.info(LOG_COMP, "Last Updated Date: #{updated_at}")
+        '''
+    end
 
+    def report()
+        Log.info(LOG_COMP, "Reporting Validation")
     end
 end
