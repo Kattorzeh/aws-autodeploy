@@ -1,5 +1,5 @@
 require 'actions/action'
-require 'templates/validate_template'
+require '../templates/validate_template'
 
 class ValidateAction < Action
     attr_reader :success
