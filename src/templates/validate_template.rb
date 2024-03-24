@@ -1,4 +1,4 @@
-require 'json-schema'
+require 'json'
 require 'aws-sdk'
 
 class ValidateTemplate
