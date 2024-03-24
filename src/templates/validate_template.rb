@@ -12,7 +12,7 @@ class ValidateTemplate
     aws_ec2_client = Aws::EC2::Client.new
 
     # AWS Data
-    aws_ec2_types = ec2.describe_instance_types.map(&:instance_type)
+    aws_ec2_types = aws_ec2_client.describe_instance_types.map(&:instance_type)
     
     def initialize
         aws_ec2_types.each do |instance_type|
