@@ -1,5 +1,5 @@
 require 'json'
-require 'aws-sdk'
+require 'aws-sdk-ec2'
 
 class ValidateTemplate
     LOG_COMP = 'VAL_TEMP'
@@ -12,7 +12,8 @@ class ValidateTemplate
     aws_ec2_client = Aws::EC2::Client.new
 
     # AWS Data
-    aws_ec2_types = aws_ec2_client.describe_instance_types.map(&:instance_type)
+    response = aws_ec2_client.describe_instance_types
+    aws_ec2_types = response.instance_types.map(&:instance_type)
     
     def initialize
         aws_ec2_types.each do |instance_type|

@@ -25,11 +25,11 @@ jobs:
         with:
           ruby-version: 3.3
           bundler-cache: true
-          
+
       # Setup gems
       - name: Install Ruby dependencies
         run: |
-          gem install aws-sdk
+          gem install aws-sdk-ec2
 
       # run aws_autodeploy.rb
       - name: Run main action
