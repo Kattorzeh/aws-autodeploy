@@ -13,17 +13,27 @@ class ValidateTemplate
         })
         aws_ec2_client = Aws::EC2::Client.new
 
-        # AWS Data
-        response = aws_ec2_client.describe_instance_type_offerings(
+        # AWS-EC2-TYPE
+        response_type = aws_ec2_client.describe_instance_type_offerings(
             filters: [{ name: 'instance-type', values: ['m1.nano'] }]
         )
-        puts response
+        puts response_type
         if response.instance_type_offerings.any?
             puts "'m1.nano' IS present."
         else
             puts "'m1.nano' IS NOT present."
         end
+
+        # AWS-EC2-AMI
+        response_ami = aws_ec2_client.describe_images(image_ids: ['ami-0183b16fc359a89dd'])
+        puts response_ami
+        ami = response.images[0]
+        puts "AMI ID: #{ami.image_id}"
+        puts "AMI Name: #{ami.name}"
+        puts "AMI Desc: #{ami.description}"
     end
+
+    
     # Default Values
     DEFAULT_PROVIDER    = 'aws'
     AWS_REGION          = 'eu-central-1'
