@@ -1,50 +1,66 @@
 require 'json-schema'
+require 'aws-sdk'
 
 class ValidateTemplate
     LOG_COMP = 'VAL_TEMP'
 
+    # AWS Clients
+    AWS.config(
+        access_key_id: "#{ENV['ACCESS_KEY_ID']}",
+        secret_access_key: "#{ENV['SECRET_ACCESS_KEY']}",
+        region: "#{ENV['REGION']}",
+    )
+    aws_ec2_client = Aws::EC2::Client.new
+
+    # AWS Data
+    aws_ec2_types = ec2.describe_instance_types.map(&:instance_type)
+    
+    def initialize
+        aws_ec2_types.each do |instance_type|
+          puts instance_type
+        end
+    end
     # Default Values
     DEFAULT_PROVIDER    = 'aws'
     AWS_REGION          = 'eu-central-1'
-    AWS_SIZE            = 't2.micro'
-
+    AWS_EC2_TYPE        = 't2.micro'
+    
     # EC2 Configuration Schema
     EC2_SCHEMA = {
         :type => :object,
         :properties => {
             'ec2_name' => {
                 :type => :string,
-                :required => true
-            },
-            'mail' => {
-                :type => :string,
-                :format => :email,
                 :required => false
             },
-            'instances' => {
+            'ec2_instances' => {
                 :type => :integer,
                 :required => false,
                 :minimum => 1,
                 :maximum => 5,
             },
-            'aws_region' => {
-                :type => :string,
-                :required => false,
-                :default => AWS_REGION,
-                :enum => %w[
-                    eu-central-1
-                ]
-            },
             'instance_type' => {
                 :type => :string,
                 :required => false,
-                :default => AWS_SIZE,
-                :enum => %w[
-                    t2.micro
-                    t2.medium
-                ]
+                :default => AWS_EC2_TYPE,
+                :enum => aws_ec2_types
+            },
+            'ec2_ami_os' => {
+                type: :string,
+                required: false,
+                enum: %w[linux windows]
+            },
+            'ec2_ami' => {
+                type: :string,
+                required: false,
+                pattern: '^ami-[a-f0-9]+$'
+            },
+            'ec2_tags' => {
+                type: :string,
+                required: false
             }
-        }
+        },
+        additionalProperties: false # No extra properties accepted
     }
 
 end
