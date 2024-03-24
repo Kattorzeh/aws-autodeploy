@@ -31,6 +31,8 @@ class ValidateTemplate
         puts "AMI ID: #{ami.image_id}"
         puts "AMI Name: #{ami.name}"
         puts "AMI Desc: #{ami.description}"
+        response_bad_ami = aws_ec2_client.describe_images(image_ids: ['ami-0'])
+        puts response_bad_ami
     end
 
 
