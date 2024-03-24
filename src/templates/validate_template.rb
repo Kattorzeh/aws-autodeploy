@@ -18,7 +18,7 @@ class ValidateTemplate
             filters: [{ name: 'instance-type', values: ['m1.nano'] }]
         )
         puts response_type
-        if response.instance_type_offerings.any?
+        if response_type.instance_type_offerings.any?
             puts "'m1.nano' IS present."
         else
             puts "'m1.nano' IS NOT present."
