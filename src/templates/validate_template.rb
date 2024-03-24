@@ -4,18 +4,19 @@ require 'aws-sdk-ec2'
 class ValidateTemplate
     LOG_COMP = 'VAL_TEMP'
 
-    # AWS Clients
-    Aws.config.update({
-        credentials: Aws::Credentials.new(ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY']),
-        region: ENV['REGION']
-    })
-    aws_ec2_client = Aws::EC2::Client.new
-
-    # AWS Data
-    response = aws_ec2_client.describe_instance_types
-    aws_ec2_types = response.instance_types.map(&:instance_type)
     
     def initialize
+        # AWS Clients
+        Aws.config.update({
+            credentials: Aws::Credentials.new(ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY']),
+            region: ENV['REGION']
+        })
+        aws_ec2_client = Aws::EC2::Client.new
+
+        # AWS Data
+        response = aws_ec2_client.describe_instance_types
+        aws_ec2_types = response.instance_types.map(&:instance_type)
+    
         aws_ec2_types.each do |instance_type|
           puts instance_type
         end
