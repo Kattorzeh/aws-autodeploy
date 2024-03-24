@@ -14,16 +14,14 @@ class ValidateTemplate
         aws_ec2_client = Aws::EC2::Client.new
 
         # AWS Data
-        aws_ec2_types = []
-
-        aws_ec2_client.describe_instance_types.each_page do |page|
-        page.instance_types.each do |instance|
-            aws_ec2_types << instance.instance_type
-        end
-        end
-
-        aws_ec2_types.each do |instance_type|
-            puts instance_type
+        response = aws_ec2_client.describe_instance_type_offerings(
+            filters: [{ name: 'instance-type', values: ['t2.micro'] }]
+        )
+        puts response
+        if response.instance_type_offerings.any?
+            puts "'t2.micro' IS present."
+        else
+            puts "'t2.micro' IS NOT present."
         end
 
     end
