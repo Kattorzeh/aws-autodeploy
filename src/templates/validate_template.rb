@@ -14,13 +14,18 @@ class ValidateTemplate
         aws_ec2_client = Aws::EC2::Client.new
 
         # AWS Data
-        response = aws_ec2_client.describe_instance_types
-        puts response
-        aws_ec2_types = response.instance_types.map(&:instance_type)
-        puts aws_ec2_types
-        aws_ec2_types.each do |instance_type|
-          puts instance_type
+        aws_ec2_types = []
+
+        aws_ec2_client.describe_instance_types.each_page do |page|
+        page.instance_types.each do |instance|
+            aws_ec2_types << instance.instance_type
         end
+        end
+
+        aws_ec2_types.each do |instance_type|
+            puts instance_type
+        end
+
     end
     # Default Values
     DEFAULT_PROVIDER    = 'aws'
