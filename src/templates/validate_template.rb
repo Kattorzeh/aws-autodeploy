@@ -15,25 +15,14 @@ class ValidateTemplate
 
         # AWS Data
         response = aws_ec2_client.describe_instance_type_offerings(
-            filters: [{ name: 'instance-type', values: ['t2.nano'] }]
+            filters: [{ name: 'instance-type', values: ['m1.nano'] }]
         )
         puts response
         if response.instance_type_offerings.any?
-            puts "'t2.nano' IS present."
+            puts "'m1.nano' IS present."
         else
-            puts "'t2.nano' IS NOT present."
+            puts "'m1.nano' IS NOT present."
         end
-
-        response = aws_ec2_client.describe_instance_type_offerings(
-            filters: [{ name: 'instance-type', values: ['t2.small'] }]
-        )
-        puts response
-        if response.instance_type_offerings.any?
-            puts "'t2.small' IS present."
-        else
-            puts "'t2.small' IS NOT present."
-        end
-
     end
     # Default Values
     DEFAULT_PROVIDER    = 'aws'
