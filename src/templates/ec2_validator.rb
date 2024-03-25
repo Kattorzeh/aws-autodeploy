@@ -48,26 +48,23 @@ class EC2Validator
     }
 
      # Function to validate the EC2 instance type
-    def self.validate_ec2_instance_type(instance_type,aws_ec2_client)
+    def self.validate_ec2_instance_type(instance_type, aws_ec2_client)
         errors = []
-
-        unless instance_types.nil? || instance_types.empty?
-            instance_types.each do |instance_type|
-            if instance_type.nil? || instance_type.empty?
-                errors << "EC2 instance type is empty."
-            else
-                response_type = aws_ec2_client.describe_instance_type_offerings(
-                filters: [{ name: 'instance-type', values: [instance_type] }]
-                )
-                if response_type.instance_type_offerings.empty?
-                errors << "The instance type '#{instance_type}' is not valid."
-                end
-            end
+        
+        if instance_type.nil? || instance_type.empty?
+            errors << "EC2 instance type is empty."
+        else
+            response_type = aws_ec2_client.describe_instance_type_offerings(
+            filters: [{ name: 'instance-type', values: [instance_type] }]
+            )
+            if response_type.instance_type_offerings.empty?
+            errors << "The instance type '#{instance_type}' is not valid."
             end
         end
         
         errors
     end
+      
 
     # Function to validate the EC2 AMI
     def self.validate_ec2_ami(ami_id,aws_ec2_client)
