@@ -1,38 +1,23 @@
 
 class IssueParams
-    def initialize(body)
-      @body = body
-    end
-  
-    def get_params()
-      params = {}
-
-      matches = @body.scan(/:(\w+):\s*["']?(.*?)["']?(?:,|$)/)
-      matches.each do |match|
-        param = match[0]
-        value = match[1].split(',')
-
-        # Quit \r 
-        value.map!(&:chomp)
-
-        # Only 1 value
-        if value.length == 1
-          value = value.first
-        end
-
-        if params.key?(param.to_sym)
-          if params[param.to_sym].is_a?(Array)
-            params[param.to_sym] << value
-          else
-            params[param.to_sym] = [params[param.to_sym]] + value
-          end
-        else
-          params[param.to_sym] = value
-        end
-      end
-      puts params
-      return params
-    end
-    
+  def initialize(body)
+    @body = body
   end
+
+  def get_params()
+    parsed_input = {}
+
+    lines = body.split("\n")
+    lines.each do |line|
+      if line.match(/^:(\w+):\s*(.+)$/)
+        key = $1.to_sym
+        values = $2.split(",")
+
+        parsed_input[key] = values
+      end
+    end
+    return parsed_input
+  end
+
+end
   
