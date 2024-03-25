@@ -43,7 +43,7 @@ class ValidateTemplate
 
     # ec2_instance_type & ec2_ami specific valdiation (API AWS)
     validate_ec2_instance_type(params[:ec2_instance_type]) if params.key?(:ec2_instance_type)
-    validate_ec2_ami(params[:ec2_ami]) unless params[:ec2_ami].nil? || params[:ec2_ami].empty?
+    validate_ec2_ami(params[:ec2_ami]) if params.key?(:ec2_ami)
   end
 
 
@@ -89,6 +89,10 @@ class ValidateTemplate
           errors << "AMI ID '#{ami_id}' is malformed."
         rescue Aws::EC2::Errors::InvalidAMIIDNotFound => e
           errors << "AMI '#{ami_id}' not found."
+        rescue Aws::EC2::Errors::MissingParameter => e
+          errors << "Missing parameter 'ImageId' for AMI '#{ami_id}'."
+        rescue => e
+          errors << "Error: #{e.message}"
         end
       end
     end
