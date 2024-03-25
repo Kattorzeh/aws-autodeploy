@@ -15,32 +15,22 @@ class ValidateTemplate
     end  
 
     def validate(params)
-        # Convert params keys to symbols
-        params = deep_symbolize_keys(params)
+        errors = []
 
-        # Validate against EC2 schema
-        errors = JSON::Validator.fully_validate(EC2Validator::EC2_SCHEMA, params)
-
-        # Validate EC2 instance type
-        errors += EC2Validator.validate_ec2_instance_type(params[:ec2_instance_type], @aws_ec2_client)
-
-        # Validate EC2 AMI
-        errors += EC2Validator.validate_ec2_ami(params[:ec2_ami], @aws_ec2_client)
-
-        # Prepare error messages
-        error_messages = errors.empty? ? "No errors found." : "Errors found:\n#{errors.join("\n")}"
-        puts error_messages
-    end
-
-    private
-
-    # Helper method to convert keys to symbols recursively
-    def deep_symbolize_keys(hash)
-        hash.transform_keys do |key|
-            key.is_a?(String) ? key.to_sym : key
-        end.transform_values do |value|
-            value.is_a?(Hash) ? deep_symbolize_keys(value) : value
+        params.each do |key, value|
+            errors.concat(send("validate_#{key}", value)) if respond_to?("validate_#{key}")
         end
+        puts errors
     end
     
+    private
+
+    def validate_ec2_instance_type(instance_type)
+        EC2Validator.validate_ec2_instance_type(instance_type, @aws_ec2_client)
+    end
+
+    def validate_ec2_ami(ami_ids)
+        EC2Validator.validate_ec2_ami(ami_ids, @aws_ec2_client)
+    end
+
 end
