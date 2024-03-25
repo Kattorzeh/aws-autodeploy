@@ -15,52 +15,21 @@ class ValidateTemplate
     end  
 
     def validate(params)
-        errors = []
-        Log.info(LOG_COMP, "Validating params with EC2 Schema")
+         # Convert params to symbol keys
+        params = params.transform_keys(&:to_sym)
 
-        # Validate EC2 Schema
-        params.each do |key, value|
-            Log.debug(LOG_COMP, "Validating #{key} with EC2 Schema")
-            if value.is_a?(Array)
-              value.each do |v|
-                validate_single_param(key, v, errors)
-              end
-            else
-              validate_single_param(key, value, errors)
-            end
-        end
-
-        # Validate EC2 type & ami
-        if params['ec2_instance_type'].is_a?(Array)
-            params['ec2_instance_type'].each do |instance_type|
-              errors.concat(EC2Validator.validate_ec2_instance_type(instance_type, aws_ec2_client))
-            end
-        elsif params['ec2_instance_type']
-            errors.concat(EC2Validator.validate_ec2_instance_type(params['ec2_instance_type'], aws_ec2_client))
-        end
+        # Validate against EC2 schema
+        errors = JSON::Validator.fully_validate(EC2Validator::EC2_SCHEMA, params)
         
-        if params['ec2_ami'].is_a?(Array)
-            params['ec2_ami'].each do |ami|
-              errors.concat(EC2Validator.validate_ec2_ami(ami, aws_ec2_client))
-            end
-        elsif params['ec2_ami']
-            errors.concat(EC2Validator.validate_ec2_ami(params['ec2_ami'], aws_ec2_client))
-        end
+        # Validate EC2 instance type
+        errors += EC2Validator.validate_ec2_instance_type(params[:ec2_instance_type], @aws_ec2_client)
 
-        # EC2 Schema Validation Result
-        if errors.empty?
-            Log.info(LOG_COMP, "EC2 params were validated with EC2 Schema")
-        else
-            Log.info(LOG_COMP, "EC2 params were NOT validated with EC2 Schema")
-            Log.debug(LOG_COMP, "Error: #{errors.join("\n")}")
-        end
+        # Validate EC2 AMI
+        errors += EC2Validator.validate_ec2_ami(params[:ec2_ami], @aws_ec2_client)
+
+        # Prepare error messages
+        error_messages = errors.empty? ? "No errors found." : "Errors found:\n#{errors.join("\n")}"
+        puts error_messages
     end
     
-    def validate_single_param(key, value, errors)
-        begin
-          JSON::Validator.validate!({ key => EC2Validator::EC2_SCHEMA[:properties][key] }, { key => value })
-        rescue JSON::Schema::ValidationError => e
-          errors << e.message
-        end
-    end  
 end
