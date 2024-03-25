@@ -16,18 +16,18 @@ class ValidateTemplate
     def validate(params)
         errors = []
         params.each do |key, value|
-          method_name = "validate_#{key.to_s}" # Convertir la clave a string
-          if value.is_a?(Array)
-            value.each do |item|
-              errors.concat(send(method_name, item)) if respond_to?(method_name)
+            puts key
+            if value.is_a?(Array)
+                value.each do |item|
+                    errors.concat(send("validate_#{key}", item)) if respond_to?("validate_#{key}")
+                end
+            else
+                errors.concat(send("validate_#{key}", value)) if respond_to?("validate_#{key}")
             end
-          else
-            errors.concat(send(method_name, value)) if respond_to?(method_name)
-          end
         end
         puts errors
         errors
-      end
+    end
     
 
     private
