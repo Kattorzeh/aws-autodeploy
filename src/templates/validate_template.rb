@@ -16,13 +16,13 @@ class ValidateTemplate
 
     def validate(params)
         errors = []
-
         params.each do |key, value|
             errors.concat(send("validate_#{key}", value)) if respond_to?("validate_#{key}")
         end
         puts errors
     end
     
+
     private
 
     def validate_ec2_instance_type(instance_type)
