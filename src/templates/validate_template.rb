@@ -21,15 +21,21 @@ class ValidateTemplate
 
     params.each do |key, values|
       next unless ec2_validations[key]
-
+  
       values.each do |value|
+        if value.empty? 
+          default_value = default_value_for_key(key)
+          puts "Warning: No value provided for '#{key}'. Default value '#{default_value}' will be applied."
+          value = default_value
+        end
+  
         if ec2_validations[key][:regex]
           unless value.match?(ec2_validations[key][:regex])
-            puts "Error: value '#{value}' for '#{key}' no validated. It should #{ec2_validations[key][:message]}"
+            puts "Error: value '#{value}' for '#{key}' not validated. It should #{ec2_validations[key][:message]}"
           end
         elsif ec2_validations[key][:options]
           unless ec2_validations[key][:options].include?(value)
-            puts "Error: value '#{value}' for '#{key}' no validated. It should #{ec2_validations[key][:message]}"
+            puts "Error: value '#{value}' for '#{key}' not validated. It should #{ec2_validations[key][:message]}"
           end
         end
       end
@@ -38,6 +44,20 @@ class ValidateTemplate
     # ec2_instance_type & ec2_ami specific valdiation (API AWS)
     validate_ec2_instance_type(params[:ec2_instance_type]) if params.key?(:ec2_instance_type)
     validate_ec2_ami(params[:ec2_ami]) if params.key?(:ec2_ami)
+  end
+
+
+  def default_value_for_key(key)
+    case key
+    when :ec2_instances
+      "0"
+    when :ec2_name
+      "aws-autodeploy" 
+    when :ec2_ami_os
+      "linux"
+    when :ec2_tags
+      "github" 
+    end
   end
 
   def validate_ec2_instance_type(instance_types)

@@ -26,11 +26,11 @@ NOTE: You can only configure either ec2_ami or ec2_ami_os, not both at the same 
 
 -->
 
-:ec2_instances: 6
-:ec2_name: ec2_mario,ec2_test,anew)8'¡
-:ec2_instance_type: t2.micro,t2.nano,t4444.macro
-:ec2_ami_os: linux,windows,mac
-:ec2_ami: ami-08734ec479a1ace4a,ami-failTest
+:ec2_instances: 
+:ec2_name: 
+:ec2_instance_type: 
+:ec2_ami_os: 
+:ec2_ami: 
 
-:ec2_tags: test,?¿,hola..
+:ec2_tags: 
 ...
