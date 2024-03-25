@@ -7,7 +7,7 @@ class EC2Validator
     AWS_EC2_INSTANCES   = 0
 
 
-    def self.validate_ec2_instances(instances)
+    def self.validate_ec2_instances(instances,aws_ec2_client)
         errors = []
         if instances.nil? || instances.length != 1 || !instances[0].match?(/\A[0-5]\z/)
             errors << "EC2 instances should be an array containing a single digit between 0 and 5."
@@ -15,7 +15,7 @@ class EC2Validator
         errors
     end
 
-    def self.validate_ec2_name(name)
+    def self.validate_ec2_name(name,aws_ec2_client)
         errors = []
         unless name.nil? || name.match?(/\A[\w\-]+\z/)
             errors << "EC2 name should only contain letters, numbers, hyphens, and underscores."
@@ -38,7 +38,7 @@ class EC2Validator
         errors
     end
 
-    def self.validate_ec2_ami_os(ami_os)
+    def self.validate_ec2_ami_os(ami_os,aws_ec2_client)
         errors = []
         unless ami_os.nil? || %w[windows linux].include?(ami_os)
             errors << "EC2 AMI OS should be either 'windows' or 'linux'."
@@ -60,7 +60,7 @@ class EC2Validator
         errors
     end
     
-    def self.validate_ec2_tags(tags)
+    def self.validate_ec2_tags(tags,aws_ec2_client)
         errors = []
         unless tags.nil? || tags.all? { |tag| tag.match?(/\A[\w\-]+\z/) }
             errors << "EC2 tags should only contain letters, numbers, hyphens, and underscores."

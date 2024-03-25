@@ -15,15 +15,22 @@ class ValidateTemplate
 
     def validate(params)
         errors = []
-        params.each do |key, value|
-            puts key
-            if value.is_a?(Array)
-                value.each do |item|
-                    errors += send("validate_#{key}", item) if respond_to?("validate_#{key}")
-                end
-            else
-                errors += send("validate_#{key}", value) if respond_to?("validate_#{key}")
-            end
+
+        params_to_validate = {
+            ec2_instances: :validate_ec2_instances,
+            ec2_name: :validate_ec2_name,
+            ec2_instance_type: :validate_ec2_instance_type,
+            ec2_ami_os: :validate_ec2_ami_os,
+            ec2_ami: :validate_ec2_ami,
+            ec2_tags: :validate_ec2_tags
+        }
+
+        params_to_validate.each do |param_key, validation_method|
+            next unless params.key?(param_key)
+      
+            param_value = params[param_key].first
+      
+            errors.concat(EC2Validator.send(validation_method, param_value, @aws_ec2_client))
         end
         puts errors
         return errors  # Explicitly return errors
