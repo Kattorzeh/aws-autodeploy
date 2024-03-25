@@ -7,6 +7,7 @@ class ValidateAction < Action
     def execute(issue,issue_params)
         Log.info(LOG_COMP, "Validating template")
         validate_template = ValidateTemplate.new
+        validate_template.validate(issue_params)
     end
 
     def report()

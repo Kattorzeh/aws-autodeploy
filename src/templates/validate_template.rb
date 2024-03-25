@@ -1,10 +1,10 @@
-require 'json'
+require 'json-schema'
 require 'aws-sdk-ec2'
+require_relative 'ec2_validator'
 
 class ValidateTemplate
     LOG_COMP = 'VAL_TEMP'
 
-    
     def initialize
         # AWS Clients
         Aws.config.update({
@@ -12,82 +12,30 @@ class ValidateTemplate
             region: ENV['REGION']
         })
         aws_ec2_client = Aws::EC2::Client.new
+    end  
 
-        # AWS-EC2-TYPE
-        response_type = aws_ec2_client.describe_instance_type_offerings(
-            filters: [{ name: 'instance-type', values: ['m1.nano'] }]
-        )
-        puts response_type
-        if response_type.instance_type_offerings.any?
-            puts "'m1.nano' IS present."
-        else
-            puts "'m1.nano' IS NOT present."
-        end
+    def validate(params)
+        errors = []
 
-        response_bad_type = aws_ec2_client.describe_instance_type_offerings(
-            filters: [{ name: 'instance-type', values: ['mario'] }]
-        )
-        puts response_bad_type
-
-        # AWS-EC2-AMI
-        response_ami = aws_ec2_client.describe_images(image_ids: ['ami-0183b16fc359a89dd'])
-        ami = response_ami.images[0]
-        puts "AMI ID: #{ami.image_id}"
-        puts "AMI Name: #{ami.name}"
-        puts "AMI Desc: #{ami.description}"
-
+        # Validate EC2 Schema
         begin
-            response_bad_ami = aws_ec2_client.describe_images(image_ids: ['ami-0'])
-            puts response_bad_ami
-        rescue Aws::EC2::Errors::InvalidAMIIDNotFound => e
-            puts "Error: #{e.message}"
+            Log.info(LOG_COMP, "Validating params with EC2 Schema")
+            JSON::Validator.validate!(EC2Validator::EC2_SCHEMA, params)
+        rescue JSON::Schema::ValidationError => e
+            errors << e.message
         end
-    end
+
+        # Validate EC2 type & ami
+        errors.concat(EC2Validator.validate_ec2_instance_type(params['ec2_instance_type'])) if params['ec2_instance_type']
+        errors.concat(EC2Validator.validate_ec2_ami(params['ec2_ami'])) if params['ec2_ami']
 
 
-    # Default Values
-    DEFAULT_PROVIDER    = 'aws'
-    AWS_REGION          = 'eu-central-1'
-    AWS_EC2_TYPE        = 't2.micro'
-    AWS_EC2_INSTANCES   = 0
-
-    # EC2 Configuration Schema
-    EC2_SCHEMA = {
-        :type => :object,
-        :properties => {
-            'ec2_name' => {
-                :type => :string,
-                :required => false
-            },
-            'ec2_instances' => {
-                :type => :integer,
-                :required => false,
-                :default => AWS_EC2_INSTANCES
-                :minimum => 1,
-                :maximum => 5,
-            },
-            'ec2_instance_type' => {
-                :type => :string,
-                :required => false,
-                :default => AWS_EC2_TYPE,
-                #:enum => aws_ec2_types
-            },
-            'ec2_ami_os' => {
-                type: :string,
-                required: false,
-                enum: %w[linux windows]
-            },
-            'ec2_ami' => {
-                type: :string,
-                required: false,
-                pattern: '^ami-[a-f0-9]+$'
-            },
-            'ec2_tags' => {
-                type: :string,
-                required: false
-            }
-        },
-        additionalProperties: false # No extra properties accepted
-    }
-
+        # EC2 Schema Validation Result
+        if errors.empty?
+            Log.info(LOG_COMP, "EC2 params were validated with EC2 Schema")
+        else
+            Log.info(LOG_COMP, "EC2 params were NOT validated with EC2 Schema")
+            Log.debug(LOG_COMP, "Error: #{errors.join("\n")}")
+        end
+    end  
 end
