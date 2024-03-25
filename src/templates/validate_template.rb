@@ -1,20 +1,5 @@
 require 'aws-sdk-ec2'
-require_relative 'validate_template'
 require_relative 'ec2_validator'
-
-class EC2Validator < ValidateTemplate
-  include EC2ValidatorMethods
-
-  def initialize
-    super
-  end
-
-  def validate(params)
-    errors = super
-    errors.each { |error| puts error }
-    errors
-  end
-end
 
 class ValidateTemplate
   LOG_COMP = 'VAL_TEMP'
@@ -42,4 +27,5 @@ class ValidateTemplate
     errors
   end
 end
+
   

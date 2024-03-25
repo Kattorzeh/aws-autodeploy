@@ -30,5 +30,49 @@ module EC2ValidatorMethods
     end
     errors
   end
+
+  def validate_ec2_instances(values)
+    validate_numerical_values(values, "ec2_instances")
+  end
+
+  def validate_ec2_name(values)
+    validate_strings(values, "ec2_name")
+  end
+
+  def validate_ec2_ami_os(values)
+    validate_ami_os(values, "ec2_ami_os")
+  end
+
+  def validate_ec2_tags(values)
+    validate_strings(values, "ec2_tags")
+  end
+
+  private
+
+  def validate_strings(values, key)
+    values.map { |value| "Invalid #{key}: #{value}" unless value.match?(/\A[\w\d\-]+\z/) }.compact
+  end
+
+  def validate_numerical_values(values, key)
+    values.map { |value| "Invalid #{key}: #{value}" unless value.to_i.between?(0, 5) }.compact
+  end
+
+  def validate_ami_os(values, key)
+    values.map { |value| "Invalid #{key}: #{value}" unless ['windows', 'linux'].include?(value.downcase) }.compact
+  end
+end
+
+class EC2Validator < ValidateTemplate
+  include EC2ValidatorMethods
+
+  def initialize
+    super
+  end
+
+  def validate(params)
+    errors = super
+    errors.each { |error| puts error }
+    errors
+  end
 end
 
