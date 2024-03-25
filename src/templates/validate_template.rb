@@ -1,4 +1,3 @@
-require 'json-schema'
 require 'aws-sdk-ec2'
 require_relative 'ec2_validator'
 
@@ -20,6 +19,7 @@ class ValidateTemplate
             errors.concat(send("validate_#{key}", value)) if respond_to?("validate_#{key}")
         end
         puts errors
+        errors
     end
     
 
