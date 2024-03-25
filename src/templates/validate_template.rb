@@ -11,7 +11,7 @@ class ValidateTemplate
             credentials: Aws::Credentials.new(ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY']),
             region: ENV['REGION']
         })
-        aws_ec2_client = Aws::EC2::Client.new
+        @aws_ec2_client = Aws::EC2::Client.new
     end  
 
     def validate(params)
