@@ -1,5 +1,6 @@
 require 'actions/action'
 require 'templates/validate_template'
+require 'template/ec2_validator'
 
 class ValidateAction < Action
     attr_reader :success
@@ -7,6 +8,7 @@ class ValidateAction < Action
     def execute(issue,issue_params)
         Log.info(LOG_COMP, "Validating template")
         validate_template = ValidateTemplate.new
+        puts issue_params
         errors = validate_template.validate(issue_params)
         puts errors.inspect
     end
