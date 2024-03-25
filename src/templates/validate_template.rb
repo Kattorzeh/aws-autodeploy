@@ -16,7 +16,7 @@ class ValidateTemplate
 
     def validate(params)
          # Convert params to symbol keys
-        params = params.transform_keys(&:to_sym)
+        params[:filters][0][:values].map!(&:to_s) if params[:filters] && params[:filters][0] && params[:filters][0][:values]
 
         # Validate against EC2 schema
         errors = JSON::Validator.fully_validate(EC2Validator::EC2_SCHEMA, params)
