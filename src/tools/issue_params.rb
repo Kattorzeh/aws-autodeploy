@@ -17,7 +17,7 @@ class IssueParams
       end
     end
     parsed_input.each do |key, value|
-      puts "#{key}: #{value.join(',')}"
+      puts "#{key}: #{value}"
     end
     return parsed_input
   end
