@@ -1,5 +1,4 @@
 require 'aws-sdk-ec2'
-require_relative 'ec2_validator'
 
 class ValidateTemplate
   LOG_COMP = 'VAL_TEMP'
