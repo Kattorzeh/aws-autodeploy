@@ -7,10 +7,10 @@ class ValidateAction < Action
 
     def execute(issue,issue_params)
         Log.info(LOG_COMP, "Validating template")
+        validate_template = ValidateTemplate.new
         puts issue_params
-        validator = EC2Validator.new
-        errors = validator.validate(issue_params)
-        puts errors.inspect
+        validate_template.validate(issue_params)
+        #puts errors.inspect
     end
 
     def report()
