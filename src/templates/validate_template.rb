@@ -16,6 +16,7 @@ class ValidateTemplate
     def validate(params)
         errors = []
         params.each do |key, value|
+            key = key.to_s unless key.is_a?(String)
             if value.is_a?(Array)
                 value.each do |item|
                     errors.concat(send("validate_#{key}", item)) if respond_to?("validate_#{key}")
