@@ -11,7 +11,7 @@ class IssueParams
       matches.each do |match|
         param = match[0]
         value = match[1].strip.empty? ? nil : match[1].strip
-        
+
         # If there is already a value stored for this key, convert the value to an array
         # and append the new value to the array. Otherwise, simply store the value.
         if params.key?(param.to_sym)
@@ -24,7 +24,7 @@ class IssueParams
           params[param.to_sym] = value
         end
       end
-
+      puts params
       return params
     end
   end

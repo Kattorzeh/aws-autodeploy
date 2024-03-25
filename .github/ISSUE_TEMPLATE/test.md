@@ -26,6 +26,7 @@ NOTE: You can only configure either ec2_ami or ec2_ami_os, not both at the same 
 
 -->
 
+:ec2_instances: 
 :ec2_name: 
 :instance_type: 
 :ec2_ami_os: 
