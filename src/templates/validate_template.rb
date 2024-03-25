@@ -43,7 +43,7 @@ class ValidateTemplate
 
     # ec2_instance_type & ec2_ami specific valdiation (API AWS)
     validate_ec2_instance_type(params[:ec2_instance_type]) if params.key?(:ec2_instance_type)
-    validate_ec2_ami(params[:ec2_ami]) if params.key?(:ec2_ami)
+    validate_ec2_ami(params[:ec2_ami]) unless params[:ec2_ami].nil? || params[:ec2_ami].empty?
   end
 
 
