@@ -11,57 +11,16 @@ class ValidateTemplate
   
     def validate(params)
       errors = []
-  
-      validate_ec2_instances(params[:ec2_instances], errors)
-      validate_ec2_name(params[:ec2_name], errors)
-      validate_ec2_instance_type(params[:ec2_instance_type], errors)
-      validate_ec2_ami_os(params[:ec2_ami_os], errors)
-      validate_ec2_ami(params[:ec2_ami], errors)
-      validate_ec2_tags(params[:ec2_tags], errors)
-  
+      params.each do |key, values|
+        validation_method = "validate_#{key}".to_sym
+        if respond_to?(validation_method, true)
+          errors.concat(send(validation_method, values))
+        else
+          puts "No validation method found for key: #{key}"
+        end
+      end
       errors
     end
-  
-    private
-  
-    def validate_ec2_instances(instances, errors)
-        return unless instances
-      
-        errors.concat(EC2Validator.validate_ec2_instances(instances))
-    end      
-  
-    def validate_ec2_name(name, errors)
-      return unless name
-  
-      errors.concat(EC2Validator.validate_ec2_name(name[0]))
-    end
-  
-    def validate_ec2_instance_type(instance_types, errors)
-      return unless instance_types
-  
-      instance_types.each do |instance_type|
-        errors.concat(EC2Validator.validate_ec2_instance_type(instance_type, @aws_ec2_client))
-      end
-    end
-  
-    def validate_ec2_ami_os(ami_os, errors)
-      return unless ami_os
-  
-      errors.concat(EC2Validator.validate_ec2_ami_os(ami_os[0]))
-    end
-  
-    def validate_ec2_ami(ami_ids, errors)
-      return unless ami_ids
-  
-      ami_ids.each do |ami_id|
-        errors.concat(EC2Validator.validate_ec2_ami(ami_id, @aws_ec2_client))
-      end
-    end
-  
-    def validate_ec2_tags(tags, errors)
-      return unless tags
-  
-      errors.concat(EC2Validator.validate_ec2_tags(tags))
-    end
-  end
+    
+end
   

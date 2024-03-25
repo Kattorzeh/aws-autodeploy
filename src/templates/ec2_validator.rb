@@ -1,27 +1,10 @@
 require 'aws-sdk-ec2'
 
-class EC2Validator
+class EC2Validator < ValidateTemplate
 
     # Default Values
     AWS_EC2_TYPE        = 't2.micro'
     AWS_EC2_INSTANCES   = 0
-
-
-    def self.validate_ec2_instances(instances,aws_ec2_client)
-        errors = []
-        if instances.nil? || instances.length != 1 || !instances[0].match?(/\A[0-5]\z/)
-            errors << "EC2 instances should be an array containing a single digit between 0 and 5."
-        end
-        errors
-    end
-
-    def self.validate_ec2_name(name,aws_ec2_client)
-        errors = []
-        unless name.nil? || name.match?(/\A[\w\-]+\z/)
-            errors << "EC2 name should only contain letters, numbers, hyphens, and underscores."
-        end
-        errors
-    end
 
     def self.validate_ec2_instance_type(instance_type, aws_ec2_client)
         errors = []
@@ -34,14 +17,6 @@ class EC2Validator
             if response_type.instance_type_offerings.empty?
                 errors << "The instance type '#{instance_type}' is not valid."
             end
-        end
-        errors
-    end
-
-    def self.validate_ec2_ami_os(ami_os,aws_ec2_client)
-        errors = []
-        unless ami_os.nil? || %w[windows linux].include?(ami_os)
-            errors << "EC2 AMI OS should be either 'windows' or 'linux'."
         end
         errors
     end
@@ -60,11 +35,33 @@ class EC2Validator
         errors
     end
     
-    def self.validate_ec2_tags(tags,aws_ec2_client)
-        errors = []
-        unless tags.nil? || tags.all? { |tag| tag.match?(/\A[\w\-]+\z/) }
-            errors << "EC2 tags should only contain letters, numbers, hyphens, and underscores."
-        end
-        errors
+    private
+
+    def validate_ec2_instances(values)
+        validate_numerical_values(values, "ec2_instances")
+    end
+
+    def validate_ec2_name(values)
+        validate_strings(values, "ec2_name")
+    end
+
+    def validate_ec2_ami_os(values)
+        validate_ami_os(values, "ec2_ami_os")
+    end
+
+    def validate_ec2_tags(values)
+        validate_strings(values, "ec2_tags")
+    end
+
+    def validate_strings(values, key)
+        values.map { |value| "Invalid #{key}: #{value}" unless value.match?(/\A[\w\d\-]+\z/) }.compact
+    end
+
+    def validate_numerical_values(values, key)
+        values.map { |value| "Invalid #{key}: #{value}" unless value.to_i.between?(0, 5) }.compact
+    end
+
+    def validate_ami_os(values, key)
+        values.map { |value| "Invalid #{key}: #{value}" unless ['windows', 'linux'].include?(value.downcase) }.compact
     end
 end
