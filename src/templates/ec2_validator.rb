@@ -48,7 +48,7 @@ class EC2Validator
     
     def self.validate_ec2_ami(ami_id, aws_ec2_client)
         errors = []
-        if ami_ids.nil?
+        if ami_id.nil?
             errors << "EC2 AMI is not specified."
         else
             begin
