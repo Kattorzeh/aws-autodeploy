@@ -32,5 +32,4 @@ NOTE: You can only configure either ec2_ami or ec2_ami_os, not both at the same 
 :ec2_ami_os: 
 
 :e2_tags: 
-:ec2_instances: 
 ...

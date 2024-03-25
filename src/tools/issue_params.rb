@@ -11,7 +11,7 @@ class IssueParams
     lines.each do |line|
       if line.match(/^:(\w+):\s*(.+)$/)
         key = $1.to_sym
-        values = $2.split(",")
+        values = $2.split(",").map(&:strip)
 
         parsed_input[key] = values
       end

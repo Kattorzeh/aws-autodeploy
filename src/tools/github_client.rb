@@ -17,7 +17,7 @@ class Github_client
         uri = URI("#{GH_URL}/issues/#{issue_number}")
         req = Net::HTTP::Get.new(uri)
         req['Accept'] = 'application/vnd.github.v3+json'
-        req['Authorization'] = "token #{ENV['GH_TOKEN']}"
+        req['Authorization'] = "token "
         res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
             http.request(req)
         end
