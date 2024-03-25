@@ -8,7 +8,6 @@ require_relative 'actions/action'
 require_relative 'tools/github_client'
 require_relative 'tools/issue_params'
 require_relative 'templates/validate_template'
-require_relative 'templates/ec2_validator'
 
 # Global Objects:
 
