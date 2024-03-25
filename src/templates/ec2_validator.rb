@@ -32,16 +32,3 @@ module EC2ValidatorMethods
   end
 end
 
-class EC2Validator < ValidateTemplate
-  include EC2ValidatorMethods
-
-  def initialize
-    super
-  end
-
-  def validate(params)
-    errors = super
-    errors.each { |error| puts error }
-    errors
-  end
-end
