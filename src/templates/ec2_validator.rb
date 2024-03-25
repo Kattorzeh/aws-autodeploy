@@ -1,8 +1,7 @@
 require 'aws-sdk-ec2'
-require_relative 'validate_template'
 
 module EC2ValidatorMethods
-  def validate_ec2_instance_type(instance_type, aws_ec2_client)
+  def self.validate_ec2_instance_type(instance_type, aws_ec2_client)
     errors = []
     if instance_type.nil?
       errors << "EC2 instance type is not specified."
@@ -17,7 +16,7 @@ module EC2ValidatorMethods
     errors
   end
 
-  def validate_ec2_ami(ami_id, aws_ec2_client)
+  def def.validate_ec2_ami(ami_id, aws_ec2_client)
     errors = []
     if ami_id.nil?
       errors << "EC2 AMI is not specified."
@@ -31,19 +30,19 @@ module EC2ValidatorMethods
     errors
   end
 
-  def validate_ec2_instances(values)
+  def self.validate_ec2_instances(values)
     validate_numerical_values(values, "ec2_instances")
   end
 
-  def validate_ec2_name(values)
+  def self.validate_ec2_name(values)
     validate_strings(values, "ec2_name")
   end
 
-  def validate_ec2_ami_os(values)
+  def self.validate_ec2_ami_os(values)
     validate_ami_os(values, "ec2_ami_os")
   end
 
-  def validate_ec2_tags(values)
+  def seld.validate_ec2_tags(values)
     validate_strings(values, "ec2_tags")
   end
 
@@ -61,18 +60,3 @@ module EC2ValidatorMethods
     values.map { |value| "Invalid #{key}: #{value}" unless ['windows', 'linux'].include?(value.downcase) }.compact
   end
 end
-
-class EC2Validator < ValidateTemplate
-  include EC2ValidatorMethods
-
-  def initialize
-    super
-  end
-
-  def validate(params)
-    errors = super
-    errors.each { |error| puts error }
-    errors
-  end
-end
-

@@ -4,6 +4,14 @@ require_relative 'ec2_validator'
 class ValidateTemplate
   LOG_COMP = 'VAL_TEMP'
 
+  validations = {
+    :ec2_instances => :validate_ec2_instances,
+    :ec2_name => :validate_ec2_name,
+    :ec2_instance_type => nil, 
+    :ec2_ami_os => :validate_ec2_ami_os,
+    :ec2_ami => nil, 
+    :ec2_tags => :validate_ec2_tags
+  }
   def initialize
     Aws.config.update({
       credentials: Aws::Credentials.new(ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY']),
@@ -15,16 +23,15 @@ class ValidateTemplate
   def validate(params)
     errors = []
     params.each do |key, values|
-      if key.to_s.start_with?('ec2_')
-        validation_method = "validate_#{key}".to_sym
-        if respond_to?(validation_method, true)
-          errors.concat(send(validation_method, values, @aws_ec2_client))
-        else
-          puts "No validation method found for key: #{key}"
+      validation_method = validations[key]
+      if validation_method
+        values.each do |value|
+          puts "Validation for #{key}: #{Validators.send(validation_method, value)}"
         end
+      else
+        puts "No validation for #{key}"
       end
     end
-    errors
   end
 end
 
