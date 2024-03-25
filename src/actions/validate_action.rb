@@ -1,6 +1,6 @@
 require 'actions/action'
 require 'templates/validate_template'
-require 'template/ec2_validator'
+require 'templates/ec2_validator'
 
 class ValidateAction < Action
     attr_reader :success
