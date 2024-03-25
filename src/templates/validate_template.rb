@@ -16,35 +16,19 @@ class ValidateTemplate
     def validate(params)
         errors = []
 
-        params_to_validate = {
-            ec2_instances: :validate_ec2_instances,
-            ec2_name: :validate_ec2_name,
-            ec2_instance_type: :validate_ec2_instance_type,
-            ec2_ami_os: :validate_ec2_ami_os,
-            ec2_ami: :validate_ec2_ami,
-            ec2_tags: :validate_ec2_tags
-        }
-
-        params_to_validate.each do |param_key, validation_method|
-            next unless params.key?(param_key)
-      
-            param_value = params[param_key].first
-      
-            errors.concat(EC2Validator.send(validation_method, param_value, @aws_ec2_client))
+        params.each do |key, values|  # Use `values` for arrays
+          values.each do |value|
+            validation_method = "validate_ec2_#{key}"
+            if EC2Validator.respond_to?(validation_method)  # Check for method existence
+              errors += EC2Validator.send(validation_method, value, @aws_ec2_client)
+            else
+              errors << "Validation method for key '#{key}' not found."
+            end
+          end
         end
-        puts errors
-        return errors  # Explicitly return errors
-    end
     
-
-    private
-
-    def validate_ec2_instance_type(instance_type)
-        EC2Validator.validate_ec2_instance_type(instance_type, @aws_ec2_client)
-    end
-
-    def validate_ec2_ami(ami_ids)
-        EC2Validator.validate_ec2_ami(ami_ids, @aws_ec2_client)
+        puts errors  # Optional for debugging
+        errors
     end
 
 end
