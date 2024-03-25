@@ -4,14 +4,6 @@ require_relative 'ec2_validator'
 class ValidateTemplate
   LOG_COMP = 'VAL_TEMP'
 
-  validations = {
-    :ec2_instances => :validate_ec2_instances,
-    :ec2_name => :validate_ec2_name,
-    :ec2_instance_type => nil, 
-    :ec2_ami_os => :validate_ec2_ami_os,
-    :ec2_ami => nil, 
-    :ec2_tags => :validate_ec2_tags
-  }
   def initialize
     Aws.config.update({
       credentials: Aws::Credentials.new(ENV['ACCESS_KEY_ID'], ENV['SECRET_ACCESS_KEY']),
@@ -21,18 +13,30 @@ class ValidateTemplate
   end
 
   def validate(params)
-    errors = []
+    validations = {
+      ec2_instances: { regex: /\A[0-5]\z/, message: "debe ser un número entre 0 y 5" },
+      ec2_name: { regex: /\A[a-zA-Z0-9\-_]+\z/, message: "debe contener solo letras, números, guiones y guiones bajos" },
+      ec2_ami_os: { options: ["windows", "linux"], message: "debe ser 'windows' o 'linux'" },
+      ec2_tags: { regex: /\A[a-zA-Z0-9\-_]+\z/, message: "debe contener solo letras, números, guiones y guiones bajos" }
+    }
+
     params.each do |key, values|
-      validation_method = validations[key]
-      if validation_method
-        values.each do |value|
-          puts "Validation for #{key}: #{Validators.send(validation_method, value)}"
+      next unless validations[key]
+
+      values.each do |value|
+        if validations[key][:regex]
+          unless value.match?(validations[key][:regex])
+            puts "Error: value '#{value}' for '#{key}' no validated. It should be #{validations[key][:message]}"
+          end
+        elsif validations[key][:options]
+          unless validations[key][:options].include?(value)
+            puts "Error: value '#{value}' for '#{key}' no validated. It should be #{validations[key][:message]}"
+          end
         end
-      else
-        puts "No validation for #{key}"
       end
     end
   end
+
 end
 
   
