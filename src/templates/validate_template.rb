@@ -16,7 +16,7 @@ class ValidateTemplate
 
     def validate(params)
         # Convert params keys to symbols
-        params = symbolize_keys(params)
+        params = deep_symbolize_keys(params)
 
         # Validate against EC2 schema
         errors = JSON::Validator.fully_validate(EC2Validator::EC2_SCHEMA, params)
@@ -35,9 +35,11 @@ class ValidateTemplate
     private
 
     # Helper method to convert keys to symbols recursively
-    def symbolize_keys(hash)
-        hash.each_with_object({}) do |(key, value), result|
-            result[key.to_sym] = value.is_a?(Hash) ? symbolize_keys(value) : value
+    def deep_symbolize_keys(hash)
+        hash.transform_keys do |key|
+            key.is_a?(String) ? key.to_sym : key
+        end.transform_values do |value|
+            value.is_a?(Hash) ? deep_symbolize_keys(value) : value
         end
     end
     
