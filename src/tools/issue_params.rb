@@ -10,21 +10,33 @@ class IssueParams
       matches = @body.scan(/:(\w+):\s*["']?(.*?)["']?(?:,|$)/)
       matches.each do |match|
         param = match[0]
-        value = match[1].split(',')
+        value = match[1].strip.split(',')  #
+
+        # Quit ":"
+        param = param.to_sym
     
-        # If there is already a value stored for this key, convert the value to an array if it's not already
-        if params.key?(param.to_sym)
-          if params[param.to_sym].is_a?(Array)
-            params[param.to_sym] += value
+        # Quit \r 
+        value.map!(&:chomp)
+    
+        # Only 1 value
+        if value.length == 1
+          value = value.first
+        end
+    
+        # +1 value x key -> converts it into an array (if it sin't it)
+        if params.key?(param)
+          if params[param].is_a?(Array)
+            params[param] << value
           else
-            params[param.to_sym] = [params[param.to_sym]] + value
+            params[param] = [params[param], value]
           end
         else
-          params[param.to_sym] = value
+          params[param] = value
         end
       end
       puts params
       return params
     end
+    
   end
   
