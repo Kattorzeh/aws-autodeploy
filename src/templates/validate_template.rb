@@ -15,12 +15,12 @@ class ValidateTemplate
     end  
 
     def validate(params)
-         # Convert params to symbol keys
-        params[:filters][0][:values].map!(&:to_s) if params[:filters] && params[:filters][0] && params[:filters][0][:values]
+        # Convert params keys to symbols
+        params = symbolize_keys(params)
 
         # Validate against EC2 schema
         errors = JSON::Validator.fully_validate(EC2Validator::EC2_SCHEMA, params)
-        
+
         # Validate EC2 instance type
         errors += EC2Validator.validate_ec2_instance_type(params[:ec2_instance_type], @aws_ec2_client)
 
@@ -30,6 +30,15 @@ class ValidateTemplate
         # Prepare error messages
         error_messages = errors.empty? ? "No errors found." : "Errors found:\n#{errors.join("\n")}"
         puts error_messages
+    end
+
+    private
+
+    # Helper method to convert keys to symbols recursively
+    def symbolize_keys(hash)
+        hash.each_with_object({}) do |(key, value), result|
+            result[key.to_sym] = value.is_a?(Hash) ? symbolize_keys(value) : value
+        end
     end
     
 end
