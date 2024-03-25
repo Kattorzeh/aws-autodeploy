@@ -49,7 +49,8 @@ class ValidateTemplate
     DEFAULT_PROVIDER    = 'aws'
     AWS_REGION          = 'eu-central-1'
     AWS_EC2_TYPE        = 't2.micro'
-    
+    AWS_EC2_INSTANCES   = 0
+
     # EC2 Configuration Schema
     EC2_SCHEMA = {
         :type => :object,
@@ -61,10 +62,11 @@ class ValidateTemplate
             'ec2_instances' => {
                 :type => :integer,
                 :required => false,
+                :default => AWS_EC2_INSTANCES
                 :minimum => 1,
                 :maximum => 5,
             },
-            'instance_type' => {
+            'ec2_instance_type' => {
                 :type => :string,
                 :required => false,
                 :default => AWS_EC2_TYPE,

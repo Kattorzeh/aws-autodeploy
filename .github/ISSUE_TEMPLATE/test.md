@@ -13,13 +13,13 @@ This template is used to configure and deploy an EC2 instance.
 
 An example template with the minimum fields is shown below.
 
-:ec2_name: ec2_mario
-:instance_type: t2.micro
-:ec2_ami_os: linux
+:ec2_instances: 2
+:ec2_name: ec2_mario,ec2_test
+:ec2_instance_type: t2.micro,t2.nano
+:ec2_ami_os: linux,windows
 :ec2_ami: ami-08734ec479a1ace4a
 
 :ec2_tags: test
-:ec2_instances: 2
 
 NOTE: You can only configure either ec2_ami or ec2_ami_os, not both at the same time.
 
