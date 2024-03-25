@@ -25,12 +25,10 @@ class ValidateTemplate
     private
   
     def validate_ec2_instances(instances, errors)
-      return unless instances
-  
-      instances.each do |instance|
-        errors.concat(EC2Validator.validate_ec2_instances([instance]))
-      end
-    end
+        return unless instances
+      
+        errors.concat(EC2Validator.validate_ec2_instances(instances))
+    end      
   
     def validate_ec2_name(name, errors)
       return unless name
