@@ -64,7 +64,7 @@ class ValidateTemplate
         errors << "EC2 AMI is not specified."
       else
         begin
-          response_bad_ami = aws_ec2_client.describe_images(image_ids: [ami_id])
+          response_bad_ami = @aws_ec2_client.describe_images(image_ids: [ami_id])
         rescue Aws::EC2::Errors::InvalidAMIIDMalformed => e
           errors << "AMI ID '#{ami_id}' is malformed."
         rescue Aws::EC2::Errors::InvalidAMIIDNotFound => e
