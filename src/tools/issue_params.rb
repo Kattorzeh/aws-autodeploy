@@ -11,20 +11,12 @@ class IssueParams
       matches.each do |match|
         param = match[0]
         value = match[1].strip.split(',')  #
-
-        # Quit ":"
-        param = param.to_sym
-    
+        
         # Quit \r 
         value.map!(&:chomp)
     
-        # Only 1 value
-        if value.length == 1
-          value = value.first
-        end
-    
         # +1 value x key -> converts it into an array (if it sin't it)
-        if params.key?(param)
+        if params.key?(param.to_sym)
           if params[param].is_a?(Array)
             params[param] << value
           else
