@@ -13,7 +13,7 @@ class EC2Validator
         properties: {
             'ec2_name' => {
             type: :string,
-            pattern: '^[a-zA-Z0-9_]+$',
+            pattern: '^[a-zA-Z0-9_-]+$',
             required: false
             },
             'ec2_instances' => {
@@ -40,7 +40,7 @@ class EC2Validator
             },
             'ec2_tags' => {
             type: :string,
-            pattern: '^[a-zA-Z0-9_]+$',
+            pattern: '^[a-zA-Z0-9_-]+$',
             required: false
             }
         },

@@ -16,9 +16,11 @@ class ValidateTemplate
 
     def validate(params)
         errors = []
+        Log.info(LOG_COMP, "Validating params with EC2 Schema")
 
         # Validate EC2 Schema
         params.each do |key, value|
+            Log.debug(LOG_COMP, "Validating #{key} with EC2 Schema")
             if value.is_a?(Array)
               value.each do |v|
                 validate_single_param(key, v, errors)
@@ -56,7 +58,6 @@ class ValidateTemplate
     
     def validate_single_param(key, value, errors)
         begin
-          Log.info(LOG_COMP, "Validating #{key} with EC2 Schema")
           JSON::Validator.validate!({ key => EC2Validator::EC2_SCHEMA[:properties][key] }, { key => value })
         rescue JSON::Schema::ValidationError => e
           errors << e.message
