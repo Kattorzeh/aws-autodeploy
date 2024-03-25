@@ -12,30 +12,67 @@ class ValidateTemplate
   end
 
   def validate(params)
-    validations = {
-      ec2_instances: { regex: /\A[0-5]\z/, message: "debe ser un número entre 0 y 5" },
-      ec2_name: { regex: /\A[a-zA-Z0-9\-_]+\z/, message: "debe contener solo letras, números, guiones y guiones bajos" },
-      ec2_ami_os: { options: ["windows", "linux"], message: "debe ser 'windows' o 'linux'" },
-      ec2_tags: { regex: /\A[a-zA-Z0-9\-_]+\z/, message: "debe contener solo letras, números, guiones y guiones bajos" }
+    ec2_validations = {
+      ec2_instances: { regex: /\A[0-5]\z/, message: "be a number between 0 and 5" },
+      ec2_name: { regex: /\A[a-zA-Z0-9\-_]+\z/, message: "contain only characters, numbers, - or _" },
+      ec2_ami_os: { options: ["windows", "linux"], message: "be 'windows' o 'linux'" },
+      ec2_tags: { regex: /\A[a-zA-Z0-9\-_]+\z/, message: "contain only characters, numbers, - or _" }
     }
 
     params.each do |key, values|
-      next unless validations[key]
+      next unless ec2_validations[key]
 
       values.each do |value|
-        if validations[key][:regex]
-          unless value.match?(validations[key][:regex])
-            puts "Error: value '#{value}' for '#{key}' no validated. It should be #{validations[key][:message]}"
+        if ec2_validations[key][:regex]
+          unless value.match?(ec2_validations[key][:regex])
+            puts "Error: value '#{value}' for '#{key}' no validated. It should #{ec2_validations[key][:message]}"
           end
-        elsif validations[key][:options]
-          unless validations[key][:options].include?(value)
-            puts "Error: value '#{value}' for '#{key}' no validated. It should be #{validations[key][:message]}"
+        elsif ec2_validations[key][:options]
+          unless ec2_validations[key][:options].include?(value)
+            puts "Error: value '#{value}' for '#{key}' no validated. It should #{ec2_validations[key][:message]}"
           end
         end
       end
     end
+
+    # ec2_instance_type & ec2_ami specific valdiation (API AWS)
+    validate_ec2_instance_type(params[:ec2_instance_type]) if params.key?(:ec2_instance_type)
+    validate_ec2_ami(params[:ec2_ami]) if params.key?(:ec2_ami)
   end
 
+  def validate_ec2_instance_type(instance_types)
+    errors = []
+    instance_types.each do |instance_type|
+      if instance_type.nil?
+        errors << "EC2 instance type is not specified."
+      else
+        response_type = @aws_ec2_client.describe_instance_type_offerings(
+          filters: [{ name: 'instance-type', values: [instance_type] }]
+        )
+        if response_type.instance_type_offerings.empty?
+          errors << "The instance type '#{instance_type}' is not valid."
+        end
+      end
+    end
+    errors.each { |error| puts error }
+  end
+  
+  def validate_ec2_ami(ami_ids)
+    errors = []
+    ami_ids.each do |ami_id|
+      if ami_id.nil?
+        errors << "EC2 AMI is not specified."
+      else
+        begin
+          response_bad_ami = @aws_ec2_client.describe_images(image_ids: [ami_id])
+        rescue Aws::EC2::Errors::InvalidAMIIDNotFound => e
+          errors << "AMI '#{ami_id}' not found."
+        end
+      end
+    end
+    errors.each { |error| puts error }
+  end
+  
 end
 
   
