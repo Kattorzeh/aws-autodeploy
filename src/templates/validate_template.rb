@@ -90,7 +90,7 @@ class ValidateTemplate
         rescue Aws::EC2::Errors::InvalidAMIIDNotFound => e
           errors << "AMI '#{ami_id}' not found."
         rescue Aws::EC2::Errors::MissingParameter => e
-          errors << "Missing parameter 'ImageId' for AMI '#{ami_id}'."
+          errors << "AMI ID is null: '#{ami_id}'."
         rescue => e
           errors << "Error: #{e.message}"
         end
