@@ -7,7 +7,7 @@ class IssueParams
   def get_params()
     parsed_input = {}
 
-    lines = body.split("\n")
+    lines = @body.split("\n")
     lines.each do |line|
       if line.match(/^:(\w+):\s*(.+)$/)
         key = $1.to_sym
