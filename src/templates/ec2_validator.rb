@@ -13,11 +13,13 @@ class EC2Validator
         properties: {
             'ec2_name' => {
             type: :string,
+            pattern: '^[a-zA-Z0-9_]+$',
             required: false
             },
             'ec2_instances' => {
             type: :integer,
             required: false,
+            pattern: '^[1-5]$',
             default: AWS_EC2_INSTANCES,
             minimum: 1,
             maximum: 5,
@@ -38,6 +40,7 @@ class EC2Validator
             },
             'ec2_tags' => {
             type: :string,
+            pattern: '^[a-zA-Z0-9_]+$',
             required: false
             }
         },
