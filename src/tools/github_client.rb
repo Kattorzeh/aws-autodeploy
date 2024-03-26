@@ -9,12 +9,14 @@ class Github_client
 
     LOG_COMP = 'GH'
 
-    GH_URL = 'https://api.github.com/repos/Kattorzeh/aws-autodeploy'
+    GH_URL_BASE = 'https://api.github.com/repos/'
+    repo_name = ENV['GITHUB_REPOSITORY']
+    GH_URL = "#{GH_URL_BASE}#{repo_name}"
 
     # Obtain Issue details
     def self.get_issue(issue_number)
         Log.info(LOG_COMP, 'Configuring github client')
-        Log.debug(LOG_COMP, "Repo: #{ENV['GITHUB_REPOSITORY']}")
+        
         uri = URI("#{GH_URL}/issues/#{issue_number}")
         req = Net::HTTP::Get.new(uri)
         req['Accept'] = 'application/vnd.github.v3+json'
