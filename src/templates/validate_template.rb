@@ -12,45 +12,50 @@ class ValidateTemplate
   end
 
   def validate(params)
+    errors = []
+    warnings = []
+  
     ec2_validations = {
       ec2_instances: { regex: /\A[0-5]\z/, message: "be a number between 0 and 5" },
       ec2_name: { regex: /\A[a-zA-Z0-9\-_]+\z/, message: "contain only characters, numbers, - or _" },
-      ec2_ami_os: { options: ["windows", "linux"], message: "be 'windows' o 'linux'" },
+      ec2_ami_os: { options: ["windows", "linux"], message: "be 'windows' or 'linux'" },
       ec2_tags: { regex: /\A[a-zA-Z0-9\-_]+\z/, message: "contain only characters, numbers, - or _" }
     }
-
+    
+    Log.debug(LOG_COMP, "Validating with EC2 schema")
     params.each do |key, values|
       next unless ec2_validations[key]
   
       values.each do |value|
         if value.empty? 
           default_value = default_value_for_key(key)
-          puts "Warning: No value provided for '#{key}'. Default value '#{default_value}' will be applied."
+          warnings << "No value provided for '#{key}'. Default value '#{default_value}' will be applied."
           value = default_value
         end
   
         if ec2_validations[key][:regex]
           unless value.match?(ec2_validations[key][:regex])
-            puts "Error: value '#{value}' for '#{key}' not validated. It should #{ec2_validations[key][:message]}"
+            errors << "Value '#{value}' for '#{key}' not validated. It should #{ec2_validations[key][:message]}"
           end
         elsif ec2_validations[key][:options]
           unless ec2_validations[key][:options].include?(value)
-            puts "Error: value '#{value}' for '#{key}' not validated. It should #{ec2_validations[key][:message]}"
+            errors << "Value '#{value}' for '#{key}' not validated. It should #{ec2_validations[key][:message]}"
           end
         end
       end
     end
-
-    # ec2_instance_type & ec2_ami specific valdiation (API AWS)
-    validate_ec2_instance_type(params[:ec2_instance_type]) if params.key?(:ec2_instance_type)
-    validate_ec2_ami(params[:ec2_ami]) if params.key?(:ec2_ami)
+  
+    # ec2_instance_type & ec2_ami specific validation (AWS API)
+    errors.concat(validate_ec2_instance_type(params[:ec2_instance_type])) if params.key?(:ec2_instance_type)
+    errors.concat(validate_ec2_ami(params[:ec2_ami])) if params.key?(:ec2_ami)
+  
+    [errors, warnings]
   end
-
-
+  
   def default_value_for_key(key)
     case key
     when :ec2_instances
-      "0"
+      "1"
     when :ec2_name
       "aws-autodeploy" 
     when :ec2_ami_os
@@ -59,7 +64,7 @@ class ValidateTemplate
       "github" 
     end
   end
-
+  
   def validate_ec2_instance_type(instance_types)
     errors = []
     instance_types.each do |instance_type|
@@ -74,7 +79,7 @@ class ValidateTemplate
         end
       end
     end
-    errors.each { |error| puts error }
+    errors
   end
   
   def validate_ec2_ami(ami_ids)
@@ -96,7 +101,7 @@ class ValidateTemplate
         end
       end
     end
-    errors.each { |error| puts error }
+    errors
   end
   
 end

@@ -4,6 +4,7 @@ $LOAD_PATH << '../src'
 require 'logger'
 require 'tools/log'
 require 'json'
+require 'octokit'
 require_relative 'actions/action'
 require_relative 'tools/github_client'
 require_relative 'tools/issue_params'
@@ -23,6 +24,7 @@ action_tag = ARGV[0].to_s
 Log.debug(LOG_COMP, "Action tag: #{action_tag}")
 
 # Issue from GitHub Client
+repo = ENV['GITHUB_REPOSITORY'].split('/').last
 issue_number = ARGV[1]
 issue = Github_client.get_issue(issue_number)
 Log.debug(LOG_COMP, "Issue num: #{issue_number}")
@@ -42,4 +44,7 @@ action.execute(issue,issue_params)
 
 # Report results
 Log.debug(LOG_COMP, "Reporting action '#{action_tag}'")
-action.report()
+comment_body = action.report()
+
+client.add_comment(repo, issue_number, comment_body)
+
