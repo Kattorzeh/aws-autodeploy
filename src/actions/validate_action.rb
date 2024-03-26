@@ -12,12 +12,12 @@ class ValidateAction < Action
         
         if @errors.empty?
             @success = true
-            Log.debug(LOG_COMP, "Validation was successful")
+            Log.info(LOG_COMP, "Validation was successful")
         else
             @success = false
             Log.error(LOG_COMP, "Validation failed with errors: #{@errors}")
         end
-        return @success ? 'VALIDATED' : 'FAILED_VALIDATE'
+        return @success ? 'state-validated' : 'state-failed-validate'
     end
 
     def report()
