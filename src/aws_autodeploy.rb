@@ -19,6 +19,9 @@ logger = Logger.new(STDOUT)
 Log.logger = logger
 Log.info(LOG_COMP, 'Starting AWS-Autodeploy')
 
+# Client for issue comments
+client = Octokit::Client.new(access_token: 'TU_TOKEN_DE_ACCESO')
+
 # Action tag
 action_tag = ARGV[0].to_s
 Log.debug(LOG_COMP, "Action tag: #{action_tag}")
@@ -45,6 +48,5 @@ action.execute(issue,issue_params)
 # Report results
 Log.debug(LOG_COMP, "Reporting action '#{action_tag}'")
 comment_body = action.report()
-
 client.add_comment(repo, issue_number, comment_body)
 
