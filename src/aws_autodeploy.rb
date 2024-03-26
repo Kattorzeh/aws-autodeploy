@@ -20,14 +20,14 @@ Log.logger = logger
 Log.info(LOG_COMP, 'Starting AWS-Autodeploy')
 
 # Client for issue comments
-client = Octokit::Client.new(access_token: 'TU_TOKEN_DE_ACCESO')
+client = Octokit::Client.new(access_token: ENV['GH_TOKEN'])
 
 # Action tag
 action_tag = ARGV[0].to_s
 Log.debug(LOG_COMP, "Action tag: #{action_tag}")
 
 # Issue from GitHub Client
-repo = ENV['GITHUB_REPOSITORY'].split('/').last
+repo = ENV['GITHUB_REPOSITORY']
 issue_number = ARGV[1]
 issue = Github_client.get_issue(issue_number)
 Log.debug(LOG_COMP, "Issue num: #{issue_number}")
