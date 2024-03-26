@@ -17,7 +17,7 @@ An example template with the minimum fields is shown below.
 :ec2_name: ec2_mario,ec2_test
 :ec2_instance_type: t2.micro,t2.nano
 :ec2_ami_os: linux,windows
-:ec2_ami: ami-08734ec479a1ace4a
+:ec2_ami: ami-0183b16fc359a89dd
 
 :ec2_tags: test
 

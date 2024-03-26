@@ -15,9 +15,9 @@ class ValidateAction < Action
             Log.debug(LOG_COMP, "Validation was successful")
         else
             @success = false
-            Log.debug(LOG_COMP, "Validation failed with errors: #{@errors}")
-    
+            Log.error(LOG_COMP, "Validation failed with errors: #{@errors}")
         end
+        return @success ? 'VALIDATED' : 'FAILED_VALIDATE'
     end
 
     def report()
