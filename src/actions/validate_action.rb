@@ -23,7 +23,7 @@ class ValidateAction < Action
     def report()
         if @success
             warnings_formatted = @warnings.map { |warning| "* Warning: #{warning}" }.join("\n")
-            "Validation was successful\n\n#{warnings_formatted}"
+            "Validation was successful!\n\n#{warnings_formatted}"
         else
             errors_formatted = @errors.map { |error| "* Error: #{error}" }.join("\n")
             "Validation failed with the following errors:\n\n#{errors_formatted}"
