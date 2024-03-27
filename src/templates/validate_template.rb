@@ -25,15 +25,7 @@ class ValidateTemplate
       if ordered_params[index]
         ordered_params[index].each do |key, values|
           next unless validations[key]
-          Log.info(LOG_COMP, "Validating with #{key} #{values}")
-          case service
-          when "ec2"
-            if key == "ec2_instance_type"
-              errors.concat(validate_ec2_instance_type(values))
-            elsif key == "ec2_ami"
-              errors.concat(validate_ec2_ami(values))
-            end
-          end          
+          Log.info(LOG_COMP, "Validating with #{key} #{values}")       
           values.each do |value|
             if value.empty? 
               default_value = default_value_for_key(key)
@@ -52,9 +44,20 @@ class ValidateTemplate
             end
           end
         end
-      end
+      # Specific validation for certain services (e.g., AWS API)
+      case service
+      when "ec2"
+        ec2_instance_type_index = ordered_params.index { |param| param.key?(:ec2_instance_type) }
+        if ec2_instance_type_index
+          errors.concat(validate_ec2_instance_type(ordered_params[ec2_instance_type_index][:ec2_instance_type]))
+        end
+      
+        ec2_ami_index = ordered_params.index { |param| param.key?(:ec2_ami) }
+        if ec2_ami_index
+          errors.concat(validate_ec2_ami(ordered_params[ec2_ami_index][:ec2_ami]))
+        end
+      end      
     end
-  
     [errors, warnings]
   end
 
