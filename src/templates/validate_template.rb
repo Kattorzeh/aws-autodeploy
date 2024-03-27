@@ -44,6 +44,7 @@ class ValidateTemplate
             end
           end
         end
+      end
       # Specific validation for certain services (e.g., AWS API)
       case service
       when "ec2"
