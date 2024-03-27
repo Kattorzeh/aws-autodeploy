@@ -58,6 +58,7 @@ class ValidateTemplate
         end
       end      
     end
+  
     [errors, warnings]
   end
 
