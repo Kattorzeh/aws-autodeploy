@@ -43,7 +43,7 @@ action = Action.for(action_tag)
 
 # Execute action
 Log.debug(LOG_COMP, "Executing action '#{action_tag}'")
-action_state=action.execute(issue,issue_params)
+action_state=action.execute(issue_number,issue_params)
 
 # Report results
 Log.debug(LOG_COMP, "Reporting action '#{action_tag}'")
