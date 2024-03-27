@@ -22,24 +22,28 @@ class ValidateTemplate
   
       Log.debug(LOG_COMP, "Validating with #{service} schema")
   
-      if ordered_params[service.to_sym]
-        ordered_params[service.to_sym].each do |key, values|
-          next unless validations[key]
+      if ordered_params.any? { |params| params[service.to_sym] }
+        ordered_params.each do |params|
+          next unless params[service.to_sym]
   
-          values.each do |value|
-            if value.empty? 
-              default_value = default_value_for_key(key)
-              warnings << "No value provided for '#{key}'. Default value '#{default_value}' will be applied."
-              value = default_value
-            end
+          params[service.to_sym].each do |key, values|
+            next unless validations[key]
   
-            if validations[key][:regex]
-              unless value.match?(validations[key][:regex])
-                errors << "Value '#{value}' for '#{key}' not validated. It should #{validations[key][:message]}"
+            values.each do |value|
+              if value.empty?
+                default_value = default_value_for_key(key)
+                warnings << "No value provided for '#{key}'. Default value '#{default_value}' will be applied."
+                value = default_value
               end
-            elsif validations[key][:options]
-              unless validations[key][:options].include?(value)
-                errors << "Value '#{value}' for '#{key}' not validated. It should #{validations[key][:message]}"
+  
+              if validations[key][:regex]
+                unless value.match?(validations[key][:regex])
+                  errors << "Value '#{value}' for '#{key}' not validated. It should #{validations[key][:message]}"
+                end
+              elsif validations[key][:options]
+                unless validations[key][:options].include?(value)
+                  errors << "Value '#{value}' for '#{key}' not validated. It should #{validations[key][:message]}"
+                end
               end
             end
           end
@@ -49,13 +53,14 @@ class ValidateTemplate
       # Specific validation for certain services (e.g., AWS API)
       case service
       when "ec2"
-        errors.concat(validate_ec2_instance_type(ordered_params[:ec2_instance_type])) if ordered_params.key?(:ec2_instance_type)
-        errors.concat(validate_ec2_ami(ordered_params[:ec2_ami])) if ordered_params.key?(:ec2_ami)
+        errors.concat(validate_ec2_instance_type(ordered_params.map { |params| params[:ec2_instance_type] }.compact)) if ordered_params.any? { |params| params[:ec2_instance_type] }
+        errors.concat(validate_ec2_ami(ordered_params.map { |params| params[:ec2_ami] }.compact)) if ordered_params.any? { |params| params[:ec2_ami] }
       end
     end
   
     [errors, warnings]
   end
+  
 
   def get_validations_for_service(service)
     case service
