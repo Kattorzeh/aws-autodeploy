@@ -8,7 +8,7 @@ class DeployAction < Action
         Log.info(LOG_COMP, "Deploying template")
 
         begin
-            Terraform.plan(issue_number,ordered_params,services)
+            Terraform.prepare(issue_number,ordered_params,services)
             Terraform.init_plan(issue_number)
             Terraform.apply(issue_number)
         rescue StandardError => e

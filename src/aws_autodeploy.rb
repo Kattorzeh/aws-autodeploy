@@ -35,7 +35,7 @@ Log.debug(LOG_COMP, "Issue num: #{issue_number}")
 # Get Params from Issue
 parameterizer = IssueParams.new(issue['body'])
 issue_params = parameterizer.get_params()
-accepted_services = ["ec2", "s3"]
+accepted_services = ["ec2"]
 services = parameterizer.get_services(issue_params,accepted_services)
 ordered_params = parameterizer.get_order_params(issue_params,services)
 # Code:
