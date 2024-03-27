@@ -18,5 +18,21 @@ class IssueParams
     return parsed_input
   end
 
+  def get_services(issue_params, accepted_services)
+    services = []
+
+    issue_params.each do |key, values|
+      accepted_services.each do |service|
+        if key.to_s.start_with?(service.downcase)
+          unless services.include?(service)
+            services << service
+          end
+          break
+        end
+      end
+    end
+  
+    return services    
+  end  
 end
   

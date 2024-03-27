@@ -35,6 +35,8 @@ Log.debug(LOG_COMP, "Issue num: #{issue_number}")
 # Get Params from Issue
 parameterizer = IssueParams.new(issue['body'])
 issue_params = parameterizer.get_params()
+accepted_services = ["ec2", "s3"]
+services = parameterizer.get_services(issue_params,accepted_services)
 
 # Code:
 
@@ -43,7 +45,7 @@ action = Action.for(action_tag)
 
 # Execute action
 Log.debug(LOG_COMP, "Executing action '#{action_tag}'")
-action_state=action.execute(issue_number,issue_params)
+action_state=action.execute(issue_number,issue_params,services)
 
 # Report results
 Log.debug(LOG_COMP, "Reporting action '#{action_tag}'")

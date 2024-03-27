@@ -4,7 +4,7 @@ require 'templates/validate_template'
 class ValidateAction < Action
     attr_reader :success, :errors, :warnings
 
-    def execute(issue_number,issue_params)
+    def execute(issue_number,issue_params,services)
         Log.info(LOG_COMP, "Validating template")
 
         validate_template = ValidateTemplate.new
