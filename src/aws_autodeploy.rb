@@ -45,13 +45,12 @@ action = Action.for(action_tag)
 Log.debug(LOG_COMP, "Executing action '#{action_tag}'")
 action_state=action.execute(issue,issue_params)
 
-# Update Issue States
-Log.debug(LOG_COMP, "Updating labels for Issue")
-client.replace_all_labels(repo, issue_number, [action_state])
-
-
 # Report results
 Log.debug(LOG_COMP, "Reporting action '#{action_tag}'")
 comment_body = action.report()
 client.add_comment(repo, issue_number, comment_body)
 
+
+# Update Issue States
+Log.debug(LOG_COMP, "Updating labels for Issue")
+client.replace_all_labels(repo, issue_number, [action_state])

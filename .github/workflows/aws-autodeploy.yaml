@@ -29,7 +29,7 @@ jobs:
       # Setup gems
       - name: Install Ruby dependencies
         run: |
-          gem install aws-sdk-ec2 octokit
+          gem install aws-sdk-ec2 octokit open3
 
       # run aws_autodeploy.rb
       - name: Run main action
