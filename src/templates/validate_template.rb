@@ -25,14 +25,21 @@ class ValidateTemplate
       if ordered_params[index]
         ordered_params[index].each do |key, values|
           next unless validations[key]
-  
+          case service
+          when "ec2"
+            if key == "ec2_instance_type"
+              errors.concat(validate_ec2_instance_type(values))
+            elsif key == "ec2_ami"
+              errors.concat(validate_ec2_ami(values))
+            end
+          end          
           values.each do |value|
             if value.empty? 
               default_value = default_value_for_key(key)
               warnings << "No value provided for '#{key}'. Default value '#{default_value}' will be applied."
               value = default_value
             end
-  
+
             if validations[key][:regex]
               unless value.match?(validations[key][:regex])
                 errors << "Value '#{value}' for '#{key}' not validated. It should #{validations[key][:message]}"
@@ -44,13 +51,6 @@ class ValidateTemplate
             end
           end
         end
-      end
-  
-      # Specific validation for certain services (e.g., AWS API)
-      case service
-      when "ec2"
-        errors.concat(validate_ec2_instance_type(ordered_params[:ec2_instance_type])) if ordered_params.key?(:ec2_instance_type)
-        errors.concat(validate_ec2_ami(ordered_params[:ec2_ami])) if ordered_params.key?(:ec2_ami)
       end
     end
   
