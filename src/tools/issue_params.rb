@@ -33,6 +33,19 @@ class IssueParams
     end
   
     return services    
-  end  
+  end
+  
+  def get_order_params(issue_params,services)
+    ordered_params = Array.new(services.length) { Hash.new }
+
+    services.each_with_index do |service, index|
+      issue_params.each do |key, values|
+        if key.to_s.start_with?(service.downcase)
+          ordered_params[index][key] = values
+        end
+      end
+    end
+    return ordered_params
+  end 
 end
   

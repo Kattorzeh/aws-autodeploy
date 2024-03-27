@@ -37,7 +37,7 @@ parameterizer = IssueParams.new(issue['body'])
 issue_params = parameterizer.get_params()
 accepted_services = ["ec2", "s3"]
 services = parameterizer.get_services(issue_params,accepted_services)
-
+order_params = parameterizer.get_order_params(issue_params,services)
 # Code:
 
 # Generate action from issue tag
@@ -45,7 +45,7 @@ action = Action.for(action_tag)
 
 # Execute action
 Log.debug(LOG_COMP, "Executing action '#{action_tag}'")
-action_state=action.execute(issue_number,issue_params,services)
+action_state=action.execute(issue_number,order_params,services)
 
 # Report results
 Log.debug(LOG_COMP, "Reporting action '#{action_tag}'")

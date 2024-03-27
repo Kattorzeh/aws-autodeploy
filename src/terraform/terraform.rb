@@ -3,11 +3,36 @@ require 'tools/file_manager'
 require 'open3'
 
 class Terraform
+    attr_reader :success
 
     LOG_COMP = 'TERRAFORM'
 
-    def self.prepare(issue_number)
+    
+    def self.prepare(issue_number,order_params,services)
         Log.debug(LOG_COMP, 'Preparing terraform files')
+
+        # Prepare AWS services terrform configs files
+        errors = ""
+        config_files = ""
+        @success = true
+
+        services.each do |service|
+            config_file_path = File.join(TERRAFORM, "#{service.downcase}_config.tf")
+    
+            if File.exist?(config_file_path)
+                config_files[service] = config_file_path
+            else
+                errors += "Configuration file #{config_file_path} for service #{service} not found.\n"
+                @success = false
+            end
+        end
+
+         # If there are no errors, call the FileManager method to commit the files
+        if @success
+            copied_files, errors = FileManager.commit_config_files(config_files, FileManager.DEPLOYMENT+'/'+issue_number)
+        else
+            Log.error(LOG_COMP, "Failed to prepare terraform files:\n#{errors}")
+        end
     end
 
     # Execute Terraform init & plan 

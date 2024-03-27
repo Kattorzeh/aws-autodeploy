@@ -1,6 +1,8 @@
 require 'tools/log'
+require 'fileutils'
 
 class FileManager
+    attr_reader :success
 
     LOG_COMP = 'FM'
 
@@ -18,4 +20,30 @@ class FileManager
             Dir.chdir pwd
         end
     end
+
+    # Copies Terraform configuration files for the specified services to a new folder within 'deployments'
+    def self.commit_config_files(config_files, deploy_path)
+        errors = ""
+        copied_files = ""
+        @success = true
+
+        config_files.each do |service, config_file_path|
+            deployment_dir = File.join(deploy_path, service.downcase)
+            FileUtils.mkdir_p(deployment_dir)
+
+            begin
+                FileUtils.cp(config_file_path, deployment_dir)
+                copied_files += "Copied #{config_file_path} to #{deployment_dir}\n"
+            rescue => e
+                errors += "Error copying #{config_file_path}: #{e.message}\n"
+                @success = false
+            end
+        end
+
+        if !@success
+            Log.error(LOG_COMP, "Failed to copy terraform configuration files:\n#{errors}")
+        end
+
+        return copied_files, errors
+    end 
 end
