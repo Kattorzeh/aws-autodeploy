@@ -25,6 +25,7 @@ class ValidateTemplate
       if ordered_params[index]
         ordered_params[index].each do |key, values|
           next unless validations[key]
+          puts "#{key}"
           case service
           when "ec2"
             if key == "ec2_instance_type"
