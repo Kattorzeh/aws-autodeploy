@@ -6,12 +6,12 @@ class Terraform
 
     LOG_COMP = 'TERRAFORM'
 
-    def prepare(params)
+    def self.prepare(issue_number)
         Log.debug(LOG_COMP, 'Preparing terraform files')
     end
-    
+
     # Execute Terraform init & plan 
-    def init_plan(issue_number)
+    def self.init_plan(issue_number)
         FileManager.change_dir_temp(FileManager.DEPLOYMENT+'/'+issue_number) do
             # Terraform init
             Log.debug(LOG_COMP, 'Running terraform init')
@@ -31,10 +31,41 @@ class Terraform
                 'terraform show -json ./plan.txt"'
             )
 
-            Log.debug(LOG_COMP, "Terraform stdout:\n#{stdout}")
+            Log.debug(LOG_COMP, "Terraform plan stdout:\n#{stdout}")
             unless status.success?
                 Log.error(LOG_COMP, "Terraform plan command fails:\n#{stderr}")
                 raise "Terraform plan command fails:\n#{stderr}"
             end
         end
-    end    
+    end
+
+    # Execute Terraform apply operation
+    def self.apply(issue_number)
+        FileManager.change_dir_temp(FileManager.DEPLOYMENT+'/'+issue_number) do
+            # Terraform init
+            stdout, stderr, status = Open3.capture3('terraform apply')
+            unless status.success?
+                Log.error(LOG_COMP, "Terraform init command fails:\n#{stderr}")
+                raise "Terraform init command fails:\n#{stderr}"
+            end
+
+            # Terraform apply
+            Log.debug(LOG_COMP, "Running terraform apply")
+
+            stdout, stderr, status = Open3.capture3('terraform apply -auto-approve -no-color') 
+            
+            Log.debug(LOG_COMP, "Terraform apply stdout:\n#{stdout}")
+            unless status.success?
+                Log.error(LOG_COMP, "Terraform apply command fails:\n#{stderr}")
+                raise "Terraform apply command fails:\n#{stderr}"
+            end
+
+            # Use Terraform-bin version for better JSON parsing
+            Log.debug(LOG_COMP, "Parsing terraform information")
+            stdout, _stderr, _status = Open3.capture3('terraform-bin output -json -no-color')
+
+            outputs = JSON.parse(stdout)
+            puts outputs
+        end
+    end
+end
