@@ -11,45 +11,65 @@ class ValidateTemplate
     @aws_ec2_client = Aws::EC2::Client.new
   end
 
-  def validate(params)
+  def validate(ordered_params, services)
     errors = []
     warnings = []
   
-    ec2_validations = {
-      ec2_instances: { regex: /\A[0-5]\z/, message: "be a number between 0 and 5" },
-      ec2_name: { regex: /\A[a-zA-Z0-9\-_]+\z/, message: "contain only characters, numbers, - or _" },
-      ec2_ami_os: { options: ["windows", "linux"], message: "be 'windows' or 'linux'" },
-      ec2_tags: { regex: /\A[a-zA-Z0-9\-_]+\z/, message: "contain only characters, numbers, - or _" }
-    }
-    
-    Log.debug(LOG_COMP, "Validating with EC2 schema")
-    params.each do |key, values|
-      next unless ec2_validations[key]
+    # Specific validations for each service
+    services.each do |service|
+      validations = get_validations_for_service(service)
+      next if validations.nil?
   
-      values.each do |value|
-        if value.empty? 
-          default_value = default_value_for_key(key)
-          warnings << "No value provided for '#{key}'. Default value '#{default_value}' will be applied."
-          value = default_value
-        end
+      Log.debug(LOG_COMP, "Validating with #{service} schema")
   
-        if ec2_validations[key][:regex]
-          unless value.match?(ec2_validations[key][:regex])
-            errors << "Value '#{value}' for '#{key}' not validated. It should #{ec2_validations[key][:message]}"
-          end
-        elsif ec2_validations[key][:options]
-          unless ec2_validations[key][:options].include?(value)
-            errors << "Value '#{value}' for '#{key}' not validated. It should #{ec2_validations[key][:message]}"
+      if ordered_params[service.to_sym]
+        ordered_params[service.to_sym].each do |key, values|
+          next unless validations[key]
+  
+          values.each do |value|
+            if value.empty? 
+              default_value = default_value_for_key(key)
+              warnings << "No value provided for '#{key}'. Default value '#{default_value}' will be applied."
+              value = default_value
+            end
+  
+            if validations[key][:regex]
+              unless value.match?(validations[key][:regex])
+                errors << "Value '#{value}' for '#{key}' not validated. It should #{validations[key][:message]}"
+              end
+            elsif validations[key][:options]
+              unless validations[key][:options].include?(value)
+                errors << "Value '#{value}' for '#{key}' not validated. It should #{validations[key][:message]}"
+              end
+            end
           end
         end
       end
+  
+      # Specific validation for certain services (e.g., AWS API)
+      case service
+      when "ec2"
+        errors.concat(validate_ec2_instance_type(ordered_params[:ec2_instance_type])) if ordered_params.key?(:ec2_instance_type)
+        errors.concat(validate_ec2_ami(ordered_params[:ec2_ami])) if ordered_params.key?(:ec2_ami)
+      end
     end
   
-    # ec2_instance_type & ec2_ami specific validation (AWS API)
-    errors.concat(validate_ec2_instance_type(params[:ec2_instance_type])) if params.key?(:ec2_instance_type)
-    errors.concat(validate_ec2_ami(params[:ec2_ami])) if params.key?(:ec2_ami)
-  
     [errors, warnings]
+  end
+
+  def get_validations_for_service(service)
+    case service
+    when "ec2"
+      return {
+        ec2_instances: { regex: /\A[0-5]\z/, message: "be a number between 0 and 5" },
+        ec2_name: { regex: /\A[a-zA-Z0-9\-_]+\z/, message: "contain only characters, numbers, - or _" },
+        ec2_ami_os: { options: ["windows", "linux"], message: "be 'windows' or 'linux'" },
+        ec2_tags: { regex: /\A[a-zA-Z0-9\-_]+\z/, message: "contain only characters, numbers, - or _" }
+      }
+    # Add validations for other services as needed
+    else
+      return nil
+    end
   end
   
   def default_value_for_key(key)

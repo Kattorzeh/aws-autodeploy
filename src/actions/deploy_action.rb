@@ -4,11 +4,11 @@ require 'terraform/terraform'
 class DeployAction < Action
     attr_reader :success, :errors, :warnings
 
-    def execute(issue_number,order_params,services)
+    def execute(issue_number,ordered_params,services)
         Log.info(LOG_COMP, "Deploying template")
 
         begin
-            Terraform.plan(issue_number,order_params,services)
+            Terraform.plan(issue_number,ordered_params,services)
             Terraform.init_plan(issue_number)
             Terraform.apply(issue_number)
         rescue StandardError => e

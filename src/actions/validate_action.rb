@@ -4,11 +4,11 @@ require 'templates/validate_template'
 class ValidateAction < Action
     attr_reader :success, :errors, :warnings
 
-    def execute(issue_number,order_params,services)
+    def execute(issue_number,ordered_params,services)
         Log.info(LOG_COMP, "Validating template")
 
         validate_template = ValidateTemplate.new
-        @errors, @warnings = validate_template.validate(order_params)
+        @errors, @warnings = validate_template.validate(ordered_params,services)
         
         if @errors.empty?
             @success = true
