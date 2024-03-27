@@ -128,7 +128,4 @@ class ValidateTemplate
     end
     errors
   end
-  
 end
-
-  
