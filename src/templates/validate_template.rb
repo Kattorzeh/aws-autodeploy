@@ -25,7 +25,7 @@ class ValidateTemplate
       if ordered_params[index]
         ordered_params[index].each do |key, values|
           next unless validations[key]
-          puts "#{key}"
+          Log.info(LOG_COMP, "Validating with #{key} #{value}")
           case service
           when "ec2"
             if key == "ec2_instance_type"
