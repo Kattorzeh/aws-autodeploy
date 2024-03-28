@@ -7,9 +7,10 @@ class FileManager
     LOG_COMP = 'FM'
 
     # Global relative PATHS
-    DEPLOYMENT  = '../../deployments'
-    TERRAFORM   = '../terraform'
-
+    DEPLOYMENT      = '../../deployments'
+    TERRAFORM       = '../terraform'
+    AWS_PROVIDER    = './aws_provider.rf.erb'
+    
     # Temporarily changes the current directory to `dir`, executes the block, and reverts the directory back.
     def self.change_dir_temp(dir)
         begin
@@ -33,7 +34,7 @@ class FileManager
 
             begin
                 FileUtils.cp(config_file_path, deployment_dir)
-                copied_files += "Copied #{config_file_path} to #{deployment_dir}\n"
+                copied_files += "#{deployment_dir}/#{config_file_path};"
             rescue => e
                 errors += "Error copying #{config_file_path}: #{e.message}\n"
                 @success = false
@@ -46,4 +47,9 @@ class FileManager
 
         return copied_files, errors
     end 
+
+    def self.
+    def self.create_dir(name)
+
+    end   
 end

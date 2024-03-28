@@ -1,6 +1,7 @@
 require 'tools/log'
 require 'tools/file_manager'
 require 'open3'
+require 'erb'
 
 class Terraform
     attr_reader :success
@@ -33,6 +34,20 @@ class Terraform
         else
             Log.error(LOG_COMP, "Failed to prepare terraform files:\n#{errors}")
         end
+
+        # Set AWS Provider Data
+        template = Fiel.read(FileManager.AWS_PROVIDER)
+        render = ERB.new(template)
+
+        aws_region = ENV['AWS_REGION']
+        aws_access_key = ENV['AWS_ACCESS_KEY']
+        aws_secret_key = ENV['AWS_SECRET_KEY']
+
+        result = renderer.result(binding)
+
+        # Set variables from ordered_params in terraform config files
+        
+
     end
 
     # Execute Terraform init & plan 
